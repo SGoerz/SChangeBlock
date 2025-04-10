@@ -1,5 +1,5 @@
-Package: spatialCP
-Title: Structural change detection for time series and random fields by an analysis of variability between blocks of observations
+Package: SChangeBlock
+Title: Spatial Structural change detection for time series and random fields by an analysis of variability between blocks of observations
 Version: 0.0.0.9000
 Authors@R: 
     person("Sheila", "Goerz", , "sheila.goerz@tu-dortmund.de", role = c("aut", "cre"))

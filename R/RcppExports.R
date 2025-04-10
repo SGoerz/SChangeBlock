@@ -15,7 +15,7 @@
 #' 
 #' @export
 GMD <- function(x) {
-    .Call('_spatialCP_GMD', PACKAGE = 'spatialCP', x)
+    .Call('_SChangeBlock_GMD', PACKAGE = 'SChangeBlock', x)
 }
 
 #' Mu
@@ -29,7 +29,7 @@ GMD <- function(x) {
 #' 
 #' @export
 Mu <- function(X, l) {
-    .Call('_spatialCP_Mu', PACKAGE = 'spatialCP', X, l)
+    .Call('_SChangeBlock_Mu', PACKAGE = 'SChangeBlock', X, l)
 }
 
 #' Dependency Matrix Theta
@@ -51,16 +51,16 @@ Mu <- function(X, l) {
 #' 
 #' @export
 genTheta <- function(q, param) {
-    .Call('_spatialCP_genTheta', PACKAGE = 'spatialCP', q, param)
+    .Call('_SChangeBlock_genTheta', PACKAGE = 'SChangeBlock', q, param)
 }
 
 dependencyMA <- function(E, Theta_ = NULL, q_ = NULL, param_ = NULL) {
-    .Call('_spatialCP_dependencyMA', PACKAGE = 'spatialCP', E, Theta_, q_, param_)
+    .Call('_SChangeBlock_dependencyMA', PACKAGE = 'SChangeBlock', E, Theta_, q_, param_)
 }
 
 #' @export
 gamma <- function(X, h1, h2) {
-    .Call('_spatialCP_gamma', PACKAGE = 'spatialCP', X, h1, h2)
+    .Call('_SChangeBlock_gamma', PACKAGE = 'SChangeBlock', X, h1, h2)
 }
 
 #' Long run variance
@@ -87,7 +87,7 @@ gamma <- function(X, h1, h2) {
 #' 
 #' @export
 lrv <- function(X, b = 1L) {
-    .Call('_spatialCP_lrv', PACKAGE = 'spatialCP', X, b)
+    .Call('_SChangeBlock_lrv', PACKAGE = 'SChangeBlock', X, b)
 }
 
 #' Autocorrelation matrix
@@ -97,7 +97,7 @@ lrv <- function(X, b = 1L) {
 #' 
 #' @export
 autocov <- function(X, b, direction = 0L) {
-    .Call('_spatialCP_autocov', PACKAGE = 'spatialCP', X, b, direction)
+    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, direction)
 }
 
 #' Optimal sizes ..................
@@ -125,7 +125,7 @@ autocov <- function(X, b, direction = 0L) {
 #' 
 #' @export
 sSizes <- function(n, lower = 0.5, upper = 1, step = 0.1) {
-    .Call('_spatialCP_sSizes', PACKAGE = 'spatialCP', n, lower, upper, step)
+    .Call('_SChangeBlock_sSizes', PACKAGE = 'SChangeBlock', n, lower, upper, step)
 }
 
 #' Optimal parameter s
@@ -139,6 +139,6 @@ sSizes <- function(n, lower = 0.5, upper = 1, step = 0.1) {
 #' 
 #' @export
 sOpt <- function(n, s = 0.6) {
-    .Call('_spatialCP_sOpt', PACKAGE = 'spatialCP', n, s)
+    .Call('_SChangeBlock_sOpt', PACKAGE = 'SChangeBlock', n, s)
 }
 

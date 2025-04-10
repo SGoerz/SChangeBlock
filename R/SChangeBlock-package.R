@@ -6,7 +6,7 @@
 #' @importFrom nortest lillie.test
 #' @importFrom nortest ad.test
 #' @importFrom expm sqrtm
-#' @useDynLib spatialCP
+#' @useDynLib SChangeBlock
 ## usethis namespace: end
 NULL
 

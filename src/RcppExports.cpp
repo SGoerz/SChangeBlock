@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // GMD
 double GMD(NumericVector x);
-RcppExport SEXP _spatialCP_GMD(SEXP xSEXP) {
+RcppExport SEXP _SChangeBlock_GMD(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 // Mu
 NumericVector Mu(NumericMatrix X, IntegerVector l);
-RcppExport SEXP _spatialCP_Mu(SEXP XSEXP, SEXP lSEXP) {
+RcppExport SEXP _SChangeBlock_Mu(SEXP XSEXP, SEXP lSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -35,7 +35,7 @@ END_RCPP
 }
 // genTheta
 NumericMatrix genTheta(int q, NumericVector param);
-RcppExport SEXP _spatialCP_genTheta(SEXP qSEXP, SEXP paramSEXP) {
+RcppExport SEXP _SChangeBlock_genTheta(SEXP qSEXP, SEXP paramSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -47,7 +47,7 @@ END_RCPP
 }
 // dependencyMA
 NumericMatrix dependencyMA(NumericMatrix E, Nullable<NumericMatrix> Theta_, Nullable<IntegerVector> q_, Nullable<NumericVector> param_);
-RcppExport SEXP _spatialCP_dependencyMA(SEXP ESEXP, SEXP Theta_SEXP, SEXP q_SEXP, SEXP param_SEXP) {
+RcppExport SEXP _SChangeBlock_dependencyMA(SEXP ESEXP, SEXP Theta_SEXP, SEXP q_SEXP, SEXP param_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -61,7 +61,7 @@ END_RCPP
 }
 // gamma
 double gamma(NumericMatrix X, int h1, int h2);
-RcppExport SEXP _spatialCP_gamma(SEXP XSEXP, SEXP h1SEXP, SEXP h2SEXP) {
+RcppExport SEXP _SChangeBlock_gamma(SEXP XSEXP, SEXP h1SEXP, SEXP h2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -74,7 +74,7 @@ END_RCPP
 }
 // lrv
 double lrv(NumericMatrix X, NumericVector b);
-RcppExport SEXP _spatialCP_lrv(SEXP XSEXP, SEXP bSEXP) {
+RcppExport SEXP _SChangeBlock_lrv(SEXP XSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -86,7 +86,7 @@ END_RCPP
 }
 // autocov
 NumericMatrix autocov(NumericMatrix X, NumericVector b, int direction);
-RcppExport SEXP _spatialCP_autocov(SEXP XSEXP, SEXP bSEXP, SEXP directionSEXP) {
+RcppExport SEXP _SChangeBlock_autocov(SEXP XSEXP, SEXP bSEXP, SEXP directionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -99,7 +99,7 @@ END_RCPP
 }
 // sSizes
 DataFrame sSizes(int n, double lower, double upper, double step);
-RcppExport SEXP _spatialCP_sSizes(SEXP nSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP stepSEXP) {
+RcppExport SEXP _SChangeBlock_sSizes(SEXP nSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP stepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -113,7 +113,7 @@ END_RCPP
 }
 // sOpt
 NumericVector sOpt(IntegerVector n, double s);
-RcppExport SEXP _spatialCP_sOpt(SEXP nSEXP, SEXP sSEXP) {
+RcppExport SEXP _SChangeBlock_sOpt(SEXP nSEXP, SEXP sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,19 +125,19 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_spatialCP_GMD", (DL_FUNC) &_spatialCP_GMD, 1},
-    {"_spatialCP_Mu", (DL_FUNC) &_spatialCP_Mu, 2},
-    {"_spatialCP_genTheta", (DL_FUNC) &_spatialCP_genTheta, 2},
-    {"_spatialCP_dependencyMA", (DL_FUNC) &_spatialCP_dependencyMA, 4},
-    {"_spatialCP_gamma", (DL_FUNC) &_spatialCP_gamma, 3},
-    {"_spatialCP_lrv", (DL_FUNC) &_spatialCP_lrv, 2},
-    {"_spatialCP_autocov", (DL_FUNC) &_spatialCP_autocov, 3},
-    {"_spatialCP_sSizes", (DL_FUNC) &_spatialCP_sSizes, 4},
-    {"_spatialCP_sOpt", (DL_FUNC) &_spatialCP_sOpt, 2},
+    {"_SChangeBlock_GMD", (DL_FUNC) &_SChangeBlock_GMD, 1},
+    {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 2},
+    {"_SChangeBlock_genTheta", (DL_FUNC) &_SChangeBlock_genTheta, 2},
+    {"_SChangeBlock_dependencyMA", (DL_FUNC) &_SChangeBlock_dependencyMA, 4},
+    {"_SChangeBlock_gamma", (DL_FUNC) &_SChangeBlock_gamma, 3},
+    {"_SChangeBlock_lrv", (DL_FUNC) &_SChangeBlock_lrv, 2},
+    {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 3},
+    {"_SChangeBlock_sSizes", (DL_FUNC) &_SChangeBlock_sSizes, 4},
+    {"_SChangeBlock_sOpt", (DL_FUNC) &_SChangeBlock_sOpt, 2},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_spatialCP(DllInfo *dll) {
+RcppExport void R_init_SChangeBlock(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
