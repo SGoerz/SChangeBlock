@@ -1,9 +1,9 @@
 Package: SChangeBlock
-Title: Spatial Structural change detection for time series and random fields by an analysis of variability between blocks of observations
+Title: Spatial structural change detection by an analysis of variability between blocks of observations
 Version: 0.0.0.9000
 Authors@R: 
-    person("Sheila", "Goerz", , "sheila.goerz@tu-dortmund.de", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    c(person("Sheila", "Goerz", email = "sheila.goerz@tu-dortmund.de", role = c("aut", "cre")), person("Roland", "Fried", email = "msnat@statistik.tu-dortmund.de", role = c("ctb", "ths")))
+Description: Provides methods to detect structural changes in time series or random fields (spatial data). Focus is on the detection of abrupt changes or trends in independent data, but the package also provides a function to de-correlate data with dependence. The functions are based on the test suggested in Schmidt (2024) <DOI:10.3150/23-BEJ1686> and the work in Görz and Fried (2025+) ......
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -11,7 +11,7 @@ RoxygenNote: 7.3.2
 Imports: Rcpp, ggplot2, nortest, expm, robcp
 Depends: R (>= 3.3.1)
 LinkingTo: Rcpp
-Author: Sheila Goerz [aut, cre]
+Author: Sheila Goerz [aut, cre], Roland Fried [ctb, ths]
 Maintainer: Sheila Goerz <sheila.goerz@tu-dortmund.de>
 Suggests: 
     testthat (>= 3.0.0)

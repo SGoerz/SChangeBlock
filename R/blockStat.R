@@ -1,6 +1,6 @@
-#' Test statistic
+#' Block test statistic 
 #'
-#' Computes test statistics of the test on a location change.
+#' Computes test statistics of the block test on structural changes.
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
 #' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
@@ -24,24 +24,24 @@
 #' For \code{fun} = \code{"ANOVA"} it has the attributes \code{k} (number of blocks) and
 #' \code{N} (total number of observations).
 #' 
-#' @seealso [pValue]
+#' @seealso [block.pValue]
 #' 
 #' @examples
 #' # time series with a shift 
 #' x <- arima.sim(model = list(ar = 0.5), n = 100)
 #' x[1:50] <- x[1:50] + 1
-#' Tn(x, sOpt(100, 0.6))
+#' block.stat(x, sOpt(100, 0.6))
 #' 
 #' # field without a shift and ordinary variance
 #' X <- genField(c(50, 50))
-#' Tn(X, sOpt(50, 0.6), "var")
+#' block.stat(X, sOpt(50, 0.6), "var")
 #' 
-#' # field with a shift and oridnary variance
+#' # field with a shift and ordinary variance
 #' X <- genField(c(50, 50), type = 2)
-#' Tn(X, sOpt(50, 0.6), "var")
+#' block.stat(X, sOpt(50, 0.6), "var")
 #'
 #' @export
-Tn <- function(x, s, fun = "gmd", varEstim = var)
+block.stat <- function(x, s, fun = "gmd", varEstim = var)
 {
   if(is.vector(x) | is.ts(x)) x <- matrix(x)
   n <- dim(x)
@@ -89,7 +89,7 @@ Tn <- function(x, s, fun = "gmd", varEstim = var)
   } else if(fun == "grubbs")
   {
     # Grubbs test for outliers
-    res <- max(abs(m - mean(m))) / sqrt(sigma_mu)
+    res <- grubbs(m, sigma_mu)
     attr(res, "n") <- bn
   } else if(fun == "ANOVA")
   {

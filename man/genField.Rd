@@ -12,7 +12,6 @@ genField(
   Theta = NULL,
   q = NULL,
   param = NULL,
-  paramARMA = NULL,
   ...
 )
 }

@@ -23,12 +23,12 @@ density estimation and the Tukey-Hanning kernel function.
 }
 \examples{
 X1 <- genField(c(50, 50), Phi = genPhi(1, 0.4))
-b <- lrvBandwidth(X1, 1/3, 2/3)
+b <- bandwidth(X1, 1/3, 2/3)
 lrv(X1, b)
 
 Phi <- matrix(c(0.08, 0.1, 0.08, 0.8, 1, 0.8, 0.08, 0.1, 0.08), ncol = 3)
 X2 <- genField(c(50, 50), Phi = Phi)
-b <- lrvBandwidth(X2, 1/3, 2/3)
+b <- bandwidth(X2, 1/3, 2/3)
 lrv(X2, b)
 
 }

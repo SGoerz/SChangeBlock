@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(spatialCP)
+library(SChangeBlock)
 
-test_check("spatialCP")
+test_check("SChangeBlock")

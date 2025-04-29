@@ -34,20 +34,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // genTheta
-NumericMatrix genTheta(int q, NumericVector param);
-RcppExport SEXP _SChangeBlock_genTheta(SEXP qSEXP, SEXP paramSEXP) {
+NumericMatrix genTheta(int q, NumericVector param, String structure);
+RcppExport SEXP _SChangeBlock_genTheta(SEXP qSEXP, SEXP paramSEXP, SEXP structureSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type q(qSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
-    rcpp_result_gen = Rcpp::wrap(genTheta(q, param));
+    Rcpp::traits::input_parameter< String >::type structure(structureSEXP);
+    rcpp_result_gen = Rcpp::wrap(genTheta(q, param, structure));
     return rcpp_result_gen;
 END_RCPP
 }
-// dependencyMA
-NumericMatrix dependencyMA(NumericMatrix E, Nullable<NumericMatrix> Theta_, Nullable<IntegerVector> q_, Nullable<NumericVector> param_);
-RcppExport SEXP _SChangeBlock_dependencyMA(SEXP ESEXP, SEXP Theta_SEXP, SEXP q_SEXP, SEXP param_SEXP) {
+// dependency
+NumericMatrix dependency(NumericMatrix E, Nullable<NumericMatrix> Theta_, Nullable<IntegerVector> q_, Nullable<NumericVector> param_);
+RcppExport SEXP _SChangeBlock_dependency(SEXP ESEXP, SEXP Theta_SEXP, SEXP q_SEXP, SEXP param_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,7 +56,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Nullable<NumericMatrix> >::type Theta_(Theta_SEXP);
     Rcpp::traits::input_parameter< Nullable<IntegerVector> >::type q_(q_SEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type param_(param_SEXP);
-    rcpp_result_gen = Rcpp::wrap(dependencyMA(E, Theta_, q_, param_));
+    rcpp_result_gen = Rcpp::wrap(dependency(E, Theta_, q_, param_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -127,8 +128,8 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_SChangeBlock_GMD", (DL_FUNC) &_SChangeBlock_GMD, 1},
     {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 2},
-    {"_SChangeBlock_genTheta", (DL_FUNC) &_SChangeBlock_genTheta, 2},
-    {"_SChangeBlock_dependencyMA", (DL_FUNC) &_SChangeBlock_dependencyMA, 4},
+    {"_SChangeBlock_genTheta", (DL_FUNC) &_SChangeBlock_genTheta, 3},
+    {"_SChangeBlock_dependency", (DL_FUNC) &_SChangeBlock_dependency, 4},
     {"_SChangeBlock_gamma", (DL_FUNC) &_SChangeBlock_gamma, 3},
     {"_SChangeBlock_lrv", (DL_FUNC) &_SChangeBlock_lrv, 2},
     {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 3},

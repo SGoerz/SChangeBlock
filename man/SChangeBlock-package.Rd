@@ -4,12 +4,17 @@
 \name{SChangeBlock-package}
 \alias{SChangeBlock}
 \alias{SChangeBlock-package}
-\title{SChangeBlock: Spatial Structural change detection for time series and random fields by an analysis of variability between blocks of observations}
+\title{SChangeBlock: Spatial structural change detection by an analysis of variability between blocks of observations}
 \description{
 ------Package Description--------
 }
 \author{
 \strong{Maintainer}: Sheila Goerz \email{sheila.goerz@tu-dortmund.de}
+
+Other contributors:
+\itemize{
+  \item Roland Fried \email{msnat@statistik.tu-dortmund.de} [contributor, thesis advisor]
+}
 
 }
 \keyword{internal}

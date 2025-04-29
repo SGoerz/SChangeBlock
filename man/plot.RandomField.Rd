@@ -7,11 +7,18 @@
 \method{plot}{RandomField}(x, main = "", colors, name = "value", ...)
 }
 \arguments{
-\item{x}{\code{RandomField} object}
+\item{x}{\code{RandomField} object.}
 
-\item{main}{title to the plot}
+\item{main}{title to the plot.}
+
+\item{colors}{vector of colors over which a gradient is created.}
+
+\item{name}{title of the legend, character string.}
 
 \item{...}{other parameters to be passed through to plotting functions.}
+}
+\value{
+a ggplot2 object. Function is mostly called for its side effect.
 }
 \description{
 Plot random field

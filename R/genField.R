@@ -40,8 +40,7 @@
 #'
 #' @export
 genField <- function(n, distr = rnorm, type = 0L, H = 100, 
-                     Theta = NULL, q = NULL, param = NULL, paramARMA = NULL,
-                     ...) 
+                     Theta = NULL, q = NULL, param = NULL, ...) 
 {
   ## is there supposed to be dependency? If yes, the error matrix has to be
   ## larger than the requested field:
@@ -58,36 +57,14 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
     pn2 <- n
   }
   
-  E <- matrix(distr(prod(pn2)), nrow = pn2[1])
+  # error matrix
+  X <- matrix(distr(prod(pn2)), nrow = pn2[1])
   
-  # ar <- !is.null(Phi)
-  ma <- !is.null(Theta) || !(is.null(q) || is.null(param))
-  
-  if(ma) 
+  if(!is.null(Theta) || !(is.null(q) || is.null(param))) 
   {
-    # ## MA dependency (multiply error matrix X with dependency matrix Theta):
-    X <- dependencyMA(E, Theta, q, param)
-    if(!is.null(paramARMA))
-    {
-      E <- E[((pn[1] - 1)/2):(n[1] + (pn[1] + 1)/2), ((pn[2] - 1)/2):(n[2] + (pn[2] + 1)/2)]
-      Y <- dependencyMA(E, NULL, 1, paramARMA)
-      X <- X + Y
-    }
-  } else
-  {
-    X <- E
-  }
-  
-  # if(ma)
-  # {
-  #   if(ar)
-  #   {
-  #     X <- X + MA
-  #   } else
-  #   {
-  #     X <- MA
-  #   }
-  # }
+    # multiply error matrix X with dependency matrix Theta:
+    X <- dependency(X, Theta, q, param)
+  } 
   
   ## add alternative:
   if(type != 3L && type != 0L)
@@ -208,36 +185,3 @@ alternatives <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
   # alt[index] <- H / prod(n)^(0.43)
   return(as.integer(index))
 }
-
-
-# dependencyAR <- function(X, Phi)
-# {
-#   n <- nrow(X)
-#   m <- ncol(X)
-#   
-#   if(is.list(Phi))
-#   {
-#     ## TODO: mehr Abhaengigkeiten; mehr Tests der Eingabe
-#     Sigma1 <- toeplitz(c(1, Phi[[1]][1]^(1:(m-1)))) 
-#     Sigma2 <- toeplitz(c(1, Phi[[2]][1]^(1:(n-1)))) 
-#   } else
-#   {
-#     if(length(Phi) == 1)
-#     {
-#       Sigma1 <- toeplitz(c(1, Phi^(1:(m-1)))) 
-#       Sigma2 <- toeplitz(c(1, Phi^(1:(n-1)))) 
-#     } else
-#     {
-#       ## TODO!!
-#       stop("Noch nicht implementiert")
-#     }
-#   }
-#   
-#   # invert directional covariance matrices
-#   Sigma1.sq <- sqrtm(Sigma1)
-#   Sigma2.sq <- sqrtm(Sigma2)
-#   # combine them 
-#   Sigma.sq <- kronecker(Sigma2.sq, Sigma1.sq)
-#   
-#   return(matrix(Sigma.sq %*% as.vector(X), ncol = m))
-# }

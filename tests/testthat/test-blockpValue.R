@@ -1,7 +1,7 @@
 test_that("spatialTest produces the correct output",
 {
   x <- rnorm(c(50, 50))
-  y <- spatialTest(x, s = 0.6, fun = "gmd")
+  y <- block.test(x, s = 0.6, fun = "gmd")
   
   expect_true(is.list(y))
   expect_equal(class(y), "htest")

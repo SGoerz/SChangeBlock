@@ -1,18 +1,14 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Optimal sizes ..................
-//' 
-//' ................................
+//' Optimal sizes 
 //' 
 //' @param n integer value.
 //' @param lower,upper lower and upper search border, between 0 and 1.
 //' @param step size of the step for the search, between 0 and 1.
 //' 
-//' @details
-//' ........
 //' 
-//' @return A data frame containing
+//' @return \code{sSizes} returns a data frame containing
 //' \item{n}{the given sample size}
 //' \item{s}{the exponent in question}
 //' \item{ln}{the resulting block length}
@@ -24,6 +20,7 @@ using namespace Rcpp;
 //' sSizes(50)
 //' sSizes(50, 0.6, 0.8, 0.01)
 //' 
+//' @rdname sOpt
 //' @export
 // [[Rcpp::export]]
 DataFrame sSizes(int n, double lower = 0.5, double upper = 1, double step = 0.1)
@@ -62,12 +59,16 @@ DataFrame sSizes(int n, double lower = 0.5, double upper = 1, double step = 0.1)
 
 //' Optimal parameter s
 //' 
-//' Calculates the best parameter for a given approximation s.
+//' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
 //' 
 //' @param n Sample size(s), numeric (vector).
 //' @param s Desired exponent, \eqn{0.5 \leq s \leq 1}.
 //' 
-//' @return Numeric Vector of the optimal exponents.
+//' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
+//' 
+//' @examples 
+//' sOpt(50, 0.6)
+//' sOpt(100, 0.6)
 //' 
 //' @export
 // [[Rcpp::export]]

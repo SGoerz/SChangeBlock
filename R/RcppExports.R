@@ -23,9 +23,16 @@ GMD <- function(x) {
 #' This function returns a vector of the block means for a given random field X.
 #' 
 #' @param X Numeric vector or matrix.
-#' @param l block length. Numeric vector of the same length as X has dimensions.
+#' @param l block length. Numeric vector of length 1 or 2, depending on the number of dimensions of X.
 #' 
-#' @return A numeric vector.
+#' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.
+#' 
+#' @examples 
+#' X <- genField(c(50, 100), H = 100, type = 2)
+#' M <- Mu(X, c(10, 20))
+#' 
+#' plot(X)
+#' image(matrix(M, ncol = 5))
 #' 
 #' @export
 Mu <- function(X, l) {
@@ -39,23 +46,29 @@ Mu <- function(X, l) {
 #' 
 #' @param q model order (integer).
 #' @param param MA parameter (numeric value between 0 and 1).
+#' @param structure Character string, either "MA" or "AR" indicating the structure of the dependency matrix. Details below.
 #' 
 #' @return A matrix of size (2q + 1) x (2q + 1).
 #' 
-#' @details Symmetric spatial MA(q) model with parameter \code{param} \eqn{= \theta}:
-#'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta^{|k - q - 1| + |l - q - 1|} \varepsilon_{kl}.}
-#'          \eqn{\{\theta^{|k - q - 1| + |l - q - 1|}\}_{kl} = \Theta}.
+#' @details Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model):
+#'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{kl}.}
+#'          \eqn{\{\theta^{|k - q - 1| + |l - q - 1|}\}_{kl} = \Theta}. \cr \cr
+#'          For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
+#'          For "AR": \deqn{\theta_{kl} = \tilde{\theta}_{kl} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{kl}} 
+#'          \quad \text{ with } \quad \tilde{\theta}_{kl} = \code{param}^{\sqrt{k^2 + l^2}}.}
 #'          
 #' @examples
-#' genTheta(1, 0.2)
+#' genTheta(1, 0.2, "MA")
+#' 
+#' genTheta(40, 0.2, "AR")
 #' 
 #' @export
-genTheta <- function(q, param) {
-    .Call('_SChangeBlock_genTheta', PACKAGE = 'SChangeBlock', q, param)
+genTheta <- function(q, param, structure = "MA") {
+    .Call('_SChangeBlock_genTheta', PACKAGE = 'SChangeBlock', q, param, structure)
 }
 
-dependencyMA <- function(E, Theta_ = NULL, q_ = NULL, param_ = NULL) {
-    .Call('_SChangeBlock_dependencyMA', PACKAGE = 'SChangeBlock', E, Theta_, q_, param_)
+dependency <- function(E, Theta_ = NULL, q_ = NULL, param_ = NULL) {
+    .Call('_SChangeBlock_dependency', PACKAGE = 'SChangeBlock', E, Theta_, q_, param_)
 }
 
 #' @export
@@ -77,12 +90,12 @@ gamma <- function(X, h1, h2) {
 #' 
 #' @examples
 #' X1 <- genField(c(50, 50), Phi = genPhi(1, 0.4))
-#' b <- lrvBandwidth(X1, 1/3, 2/3)
+#' b <- bandwidth(X1, 1/3, 2/3)
 #' lrv(X1, b)
 #' 
 #' Phi <- matrix(c(0.08, 0.1, 0.08, 0.8, 1, 0.8, 0.08, 0.1, 0.08), ncol = 3)
 #' X2 <- genField(c(50, 50), Phi = Phi)
-#' b <- lrvBandwidth(X2, 1/3, 2/3)
+#' b <- bandwidth(X2, 1/3, 2/3)
 #' lrv(X2, b)
 #' 
 #' @export
@@ -100,18 +113,14 @@ autocov <- function(X, b, direction = 0L) {
     .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, direction)
 }
 
-#' Optimal sizes ..................
-#' 
-#' ................................
+#' Optimal sizes 
 #' 
 #' @param n integer value.
 #' @param lower,upper lower and upper search border, between 0 and 1.
 #' @param step size of the step for the search, between 0 and 1.
 #' 
-#' @details
-#' ........
 #' 
-#' @return A data frame containing
+#' @return \code{sSizes} returns a data frame containing
 #' \item{n}{the given sample size}
 #' \item{s}{the exponent in question}
 #' \item{ln}{the resulting block length}
@@ -123,6 +132,7 @@ autocov <- function(X, b, direction = 0L) {
 #' sSizes(50)
 #' sSizes(50, 0.6, 0.8, 0.01)
 #' 
+#' @rdname sOpt
 #' @export
 sSizes <- function(n, lower = 0.5, upper = 1, step = 0.1) {
     .Call('_SChangeBlock_sSizes', PACKAGE = 'SChangeBlock', n, lower, upper, step)
@@ -130,12 +140,16 @@ sSizes <- function(n, lower = 0.5, upper = 1, step = 0.1) {
 
 #' Optimal parameter s
 #' 
-#' Calculates the best parameter for a given approximation s.
+#' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
 #' 
 #' @param n Sample size(s), numeric (vector).
 #' @param s Desired exponent, \eqn{0.5 \leq s \leq 1}.
 #' 
-#' @return Numeric Vector of the optimal exponents.
+#' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
+#' 
+#' @examples 
+#' sOpt(50, 0.6)
+#' sOpt(100, 0.6)
 #' 
 #' @export
 sOpt <- function(n, s = 0.6) {

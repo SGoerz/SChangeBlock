@@ -9,3 +9,15 @@ test_that("alternatives returns the correct format", {
   expect_equal(class(alternatives(c(50, 50), type = 3)), "numeric")
   expect_length(alternatives(c(50, 50), type = 3), 50^2)
 })
+
+test_that("genField returns the correct format", {
+  X <- genField(c(50, 40))
+  
+  expect_equal(dim(X), c(50, 40))
+  expect_equal(class(X), "RandomField")
+  
+  x <- genField(50)
+  
+  expect_equal(length(x), 50)
+  expect_equal(class(x), "RandomField")
+})

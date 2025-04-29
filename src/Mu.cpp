@@ -6,9 +6,16 @@ using namespace Rcpp;
 //' This function returns a vector of the block means for a given random field X.
 //' 
 //' @param X Numeric vector or matrix.
-//' @param l block length. Numeric vector of the same length as X has dimensions.
+//' @param l block length. Numeric vector of length 1 or 2, depending on the number of dimensions of X.
 //' 
-//' @return A numeric vector.
+//' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.
+//' 
+//' @examples 
+//' X <- genField(c(50, 100), H = 100, type = 2)
+//' M <- Mu(X, c(10, 20))
+//' 
+//' plot(X)
+//' image(matrix(M, ncol = 5))
 //' 
 //' @export
 // [[Rcpp::export]]

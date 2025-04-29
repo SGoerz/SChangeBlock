@@ -81,12 +81,41 @@ kurtosis <- function(x)
   return(mean((x - mean(x))^4) / sigma^2)
 }
 
-#' ???????
+#' Grubbs outlier test
+#' 
+#' Computes the test statistic and the critical value of the outlier test according to Grubbs.
+#' 
+#' @param x numeric vector.
+#' @param varEstim Variance estimation or estimation function. Either a numeric value or a function taking one argument.
+#' 
+#' @return numeric value.
+#' 
+#' @examples
+#' x <- rnorm(100)
+#' grubbs(x) > crit.grubbs(100, 0.05)
+#' 
+#' # add outlier
+#' x[1] <- x[1] + 100
+#' grubbs(x) > crit.grubbs(100, 0.05)
+#' 
+#' 
+#' @rdname grubbs
+#' @export
+grubbs <- function(x, varEstim = var)
+{
+  if(is.function(varEstim)) varEstim <- varEstim(x)
+  return(max(abs(x - mean(x))) / sqrt(varEstim))
+}
+
+
+#' Critical value of the Grubbs test
 #' 
 #' @param n sample size; positive numeric value.
 #' @param alpha significance level; between 0 and 1.
+#' 
+#' @rdname grubbs
 #'@export
-crit.grubbs <- function(n, alpha)
+crit.grubbs <- function(n, alpha = 0.05)
 {
   (n - 1) / sqrt(n) * sqrt(qt(alpha / 2 / n, n-2)^2 /
                              (n - 2 + qt(alpha / 2 / n, n-2)^2))
