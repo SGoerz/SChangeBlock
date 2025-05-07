@@ -24,24 +24,24 @@
 #' For \code{fun} = \code{"ANOVA"} it has the attributes \code{k} (number of blocks) and
 #' \code{N} (total number of observations).
 #' 
-#' @seealso [block.pValue]
+#' @seealso [block_pValue]
 #' 
 #' @examples
 #' # time series with a shift 
 #' x <- arima.sim(model = list(ar = 0.5), n = 100)
 #' x[1:50] <- x[1:50] + 1
-#' block.stat(x, sOpt(100, 0.6))
+#' block_stat(x, sOpt(100, 0.6))
 #' 
 #' # field without a shift and ordinary variance
 #' X <- genField(c(50, 50))
-#' block.stat(X, sOpt(50, 0.6), "var")
+#' block_stat(X, sOpt(50, 0.6), "var")
 #' 
 #' # field with a shift and ordinary variance
 #' X <- genField(c(50, 50), type = 2)
-#' block.stat(X, sOpt(50, 0.6), "var")
+#' block_stat(X, sOpt(50, 0.6), "var")
 #'
 #' @export
-block.stat <- function(x, s, fun = "gmd", varEstim = var)
+block_stat <- function(x, s, fun = "gmd", varEstim = var)
 {
   if(is.vector(x) | is.ts(x)) x <- matrix(x)
   n <- dim(x)

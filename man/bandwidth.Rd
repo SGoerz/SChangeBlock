@@ -17,10 +17,12 @@ In case of a matrix: the first value is the bandwidth for the row-wise
 and the second one for the column-wise estimation.
 }
 \description{
-Calculate MSE-optimal bandwidths according to .....
+Calculate MSE-optimal bandwidths according to Andrews (1991).
 }
 \details{
-.................
+Bandwidth \eqn{\boldsymbol{b}^{(n,m)} = (b_1^{(n)}, b_2^{(m)})} is estimated via
+\deqn{b_i^{(k)} = \min\left(k-1, \max\left(1, k^{0.3} \left(\frac{2\rho_i}{1 - \rho_i^2}\right)^{0.3}\right)\right),}
+where \eqn{\rho_1} and \eqn{\rho_2} are the mean row- resp. column-wise Spearman autocorrelations to lag 1.
 }
 \examples{
 X1 <- genField(c(50, 50), Theta = genTheta(1, 0.4))
@@ -30,4 +32,8 @@ Theta <- matrix(c(0.08, 0.1, 0.08, 0.8, 1, 0.8, 0.08, 0.1, 0.08), ncol = 3)
 X2 <- genField(c(50, 50), Theta = Theta)
 bandwidth(X2, 1/3, 2/3)
 
+}
+\references{
+Andrews, D. W. (1991). “Heteroskedasticity and autocorrelation consistent covariance
+matrix estimation”. In: Econometrica: Journal of the Econometric Society, pp. 817–858.
 }

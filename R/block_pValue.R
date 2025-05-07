@@ -3,13 +3,13 @@
 #' Returns the p-value of a test statistic according to the block test for structural changes.
 #' 
 #' @param tn test statistic
-#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block.stat}} for details).
+#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block_stat}} for details).
 #' 
 #' @returns A numeric value between 0 and 1.
 #' 
 #' @export
 #' @importFrom nortest ad.test
-block.pValue <- function(tn, fun = "gmd")
+block_pValue <- function(tn, fun = "gmd")
 {
   if(fun == "gmd" | fun == "var") return(1 - pnorm(tn))
   else if(fun == "jb") return(1 - pchisq(tn, 2))
@@ -30,7 +30,7 @@ block.pValue <- function(tn, fun = "gmd")
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
 #' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
-#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block.stat}} for details).
+#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block_stat}} for details).
 #' @param varEstim variance estimator or variance estimation of the whole field or times series.
 #'                 Either a function to estimate the variance with, or a numeric value.
 #'
@@ -41,28 +41,28 @@ block.pValue <- function(tn, fun = "gmd")
 #'  \item{method}{name of the performed test (character string).}
 #'  \item{data.name}{name of the data (character string).}
 #'
-#' @seealso [block.stat], [block.pValue]
+#' @seealso [block_stat], [block_pValue]
 #'
 #' @examples
 #' # time series with a shift 
 #' x <- arima.sim(model = list(ar = 0.5), n = 100)
 #' x[1:50] <- x[1:50] + 1
-#' block.test(x, sOpt(100, 0.6))
+#' block_test(x, sOpt(100, 0.6))
 #' 
 #' # field without a shift and ordinary variance
 #' X <- genField(c(50, 50))
-#' block.test(X, sOpt(50, 0.6), "var")
+#' block_test(X, sOpt(50, 0.6), "var")
 #' 
 #' # field with a shift and ordinary variance
 #' X <- genField(c(50, 50), type = 2)
-#' block.test(X, sOpt(50, 0.6), "var")
+#' block_test(X, sOpt(50, 0.6), "var")
 #' 
 #' @export
-block.test <- function(x, s, fun = "gmd", varEstim = var)
+block_test <- function(x, s, fun = "gmd", varEstim = var)
 {
-  stat <- block.stat(x, s, fun, varEstim)
+  stat <- block_stat(x, s, fun, varEstim)
   names(stat) <- "S"
-  pval <- block.pValue(stat, fun)
+  pval <- block_pValue(stat, fun)
   
   Dataname <- deparse(substitute(x))
   

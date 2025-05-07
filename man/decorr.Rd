@@ -4,16 +4,20 @@
 \alias{decorr}
 \title{De-correlation}
 \usage{
-decorr(X, lags, method = 1, separable = FALSE)
+decorr(X, lags, method = 1L, separable = FALSE)
 }
 \arguments{
-\item{X}{Random Field or time series}
+\item{X}{Random Field, numeric matrix, or time series}
 
-\item{lags}{}
+\item{lags}{numeric vector containing two integer values: the bandwidths for the row- reps. column-wise autocovariance estimation.
+(Up to which lag should the autocovariances be estimated?) Lags must be smaller than the dimensions of X.}
 
-\item{method}{}
+\item{method}{1L: square root of the matrix via \code{\link[robcp:modifChol]{robcp::modifChol()}}, inversion via \code{\link[=solve]{solve()}} \cr
+2L: square root and inversion via singular value decomposition \cr
+3L: square root via \code{\link[expm:sqrtm]{expm::sqrtm()}}, inversion via \code{\link[=solve]{solve()}}}
 
-\item{separable}{}
+\item{separable}{if the autocovariance function is (assumed to be) separable in the two directions of X,
+those two autocovariances can be estimated separately and then combined as a Kronecker product.}
 }
 \description{
 De-correlation

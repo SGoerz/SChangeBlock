@@ -1,15 +1,20 @@
 #'Bandwidth estimation 
 #'
-#'Calculate MSE-optimal bandwidths according to .....
+#'Calculate MSE-optimal bandwidths according to Andrews (1991).
 #'
 #'@param X numeric vector or matrix.
 #'@param p1,p2 exponents for sample size n resp. estimated dependency, between 0 and 1.
 #'
-#'@details .................
+#'@details Bandwidth \eqn{\boldsymbol{b}^{(n,m)} = (b_1^{(n)}, b_2^{(m)})} is estimated via
+#'         \deqn{b_i^{(k)} = \min\left(k-1, \max\left(1, k^{0.3} \left(\frac{2\rho_i}{1 - \rho_i^2}\right)^{0.3}\right)\right),} 
+#'         where \eqn{\rho_1} and \eqn{\rho_2} are the mean row- resp. column-wise Spearman autocorrelations to lag 1.
 #'
 #'@returns A numeric vector containing one or two elements, depending on if a vector or matrix is supplied.
 #'         In case of a matrix: the first value is the bandwidth for the row-wise 
 #'         and the second one for the column-wise estimation.
+#'         
+#'@references Andrews, D. W. (1991). “Heteroskedasticity and autocorrelation consistent covariance 
+#'            matrix estimation”. In: Econometrica: Journal of the Econometric Society, pp. 817–858.
 #'
 #'@examples 
 #'X1 <- genField(c(50, 50), Theta = genTheta(1, 0.4))
@@ -48,15 +53,19 @@ bandwidth <- function(X, p1, p2)
 
 #' De-correlation
 #' 
-#' @param X Random Field or time series
-#' @param lags 
-#' @param method 
-#' @param separable 
+#' @param X Random Field, numeric matrix, or time series
+#' @param lags numeric vector containing two integer values: the bandwidths for the row- reps. column-wise autocovariance estimation.
+#'             (Up to which lag should the autocovariances be estimated?) Lags must be smaller than the dimensions of X.
+#' @param method 1L: square root of the matrix via [robcp::modifChol()], inversion via [solve()] \cr
+#'               2L: square root and inversion via singular value decomposition \cr
+#'               3L: square root via [expm::sqrtm()], inversion via [solve()]
+#' @param separable if the autocovariance function is (assumed to be) separable in the two directions of X, 
+#'                  those two autocovariances can be estimated separately and then combined as a Kronecker product.
 #'
 #' @importFrom robcp modifChol
 #' @importFrom expm sqrtm
 #' @export
-decorr <- function(X, lags, method = 1, separable = FALSE)
+decorr <- function(X, lags, method = 1L, separable = FALSE)
 {
   if(is.ts(X)) 
   {
@@ -67,8 +76,6 @@ decorr <- function(X, lags, method = 1, separable = FALSE)
     tspX <- NULL
     clsX <- class(X)
   }
-  ## because of autocovariance definition resp. optional kernel function
-  lags <- lags + 1
   
   if(length(lags) == 1)
   {
@@ -112,9 +119,9 @@ decorr <- function(X, lags, method = 1, separable = FALSE)
   return(Y)
 }
 
-invsqrt <- function(M, method = 1)
+invsqrt <- function(M, method = 1L)
 {
-  if(method == 1)
+  if(method == 1L)
   {
     Mchol <- tryCatch(chol(M), error = function(e) e)
     if("error" %in% class(Mchol))
@@ -122,11 +129,11 @@ invsqrt <- function(M, method = 1)
       Mchol <- modifChol(M)
     }
     return(solve(Mchol))
-  } else if(method == 2)
+  } else if(method == 2L)
   {
     res <- svd(M)
     return(res$u %*% diag(1 / sqrt(res$d)) %*% t(res$v))
-  } else if(method == 3)
+  } else if(method == 3L)
   {
     Mchol <- tryCatch(chol(M), error = function(e) e)
     if("error" %in% class(Mchol))

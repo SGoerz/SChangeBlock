@@ -39,6 +39,34 @@ Mu <- function(X, l) {
     .Call('_SChangeBlock_Mu', PACKAGE = 'SChangeBlock', X, l)
 }
 
+#' Autocovariance matrix
+#' 
+#' Estimates the autocovariance matrix for a given matrix X. Via the parameter \code{direction}, it is possible to estimate only 
+#' row- or columnwise autocovariance matrices, which is useful if the autocovariance function is separable.
+#' 
+#' @param X numeric matrix,
+#' @param b numeric vector containing two integer values: the bandwidths for the row- reps. column-wise estimation.
+#'        (Up to which lag should the autocovariances be estimated?) If \code{direction} > 0: only one integer must be supplied. 
+#'        Bandwidths must be smaller than the dimensions of X.
+#' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances
+#' 
+#' @returns A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}. 
+#'          If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
+#' 
+#' @examples
+#' X <- genField(c(20, 20))
+#' autocov(X, c(4, 4))[1:10, 1:100]
+#' 
+#' # if separable:
+#' Sigma1 <- autocov(X, 4, 1)
+#' Sigma2 <- autocov(X, 4, 2)
+#' kronecker(Sigma1, Sigma2)[1:10, 1:100]
+#' 
+#' @export
+autocov <- function(X, b, direction = 0L) {
+    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, direction)
+}
+
 #' Dependency Matrix Theta
 #' 
 #' This function generates a symmetric dependency matrix \eqn{\Theta} of a 
@@ -52,7 +80,7 @@ Mu <- function(X, l) {
 #' 
 #' @details Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model):
 #'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{kl}.}
-#'          \eqn{\{\theta^{|k - q - 1| + |l - q - 1|}\}_{kl} = \Theta}. \cr \cr
+#'          \eqn{(\theta_{kl}) = \Theta}. \cr \cr
 #'          For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
 #'          For "AR": \deqn{\theta_{kl} = \tilde{\theta}_{kl} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{kl}} 
 #'          \quad \text{ with } \quad \tilde{\theta}_{kl} = \code{param}^{\sqrt{k^2 + l^2}}.}
@@ -69,48 +97,6 @@ genTheta <- function(q, param, structure = "MA") {
 
 dependency <- function(E, Theta_ = NULL, q_ = NULL, param_ = NULL) {
     .Call('_SChangeBlock_dependency', PACKAGE = 'SChangeBlock', E, Theta_, q_, param_)
-}
-
-#' @export
-gamma <- function(X, h1, h2) {
-    .Call('_SChangeBlock_gamma', PACKAGE = 'SChangeBlock', X, h1, h2)
-}
-
-#' Long run variance
-#' 
-#' Estimates the long run variance of a 2-dimensional matrix \code{X} using kernel
-#' density estimation and the Tukey-Hanning kernel function.
-#' 
-#' @param X numeric matrix,
-#' @param b numeric vector containing exactly two values: the bandwidths for the row- reps. column-wise estimation.
-#' 
-#' @details ??????? Tukey-Hanning kernel ????????
-#' 
-#' @return A numeric value.
-#' 
-#' @examples
-#' X1 <- genField(c(50, 50), Phi = genPhi(1, 0.4))
-#' b <- bandwidth(X1, 1/3, 2/3)
-#' lrv(X1, b)
-#' 
-#' Phi <- matrix(c(0.08, 0.1, 0.08, 0.8, 1, 0.8, 0.08, 0.1, 0.08), ncol = 3)
-#' X2 <- genField(c(50, 50), Phi = Phi)
-#' b <- bandwidth(X2, 1/3, 2/3)
-#' lrv(X2, b)
-#' 
-#' @export
-lrv <- function(X, b = 1L) {
-    .Call('_SChangeBlock_lrv', PACKAGE = 'SChangeBlock', X, b)
-}
-
-#' Autocorrelation matrix
-#' 
-#' @param X numeric matrix,
-#' @param b numeric vector containing exactly two values: the bandwidths for the row- reps. column-wise estimation. 
-#' 
-#' @export
-autocov <- function(X, b, direction = 0L) {
-    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, direction)
 }
 
 #' Optimal sizes 

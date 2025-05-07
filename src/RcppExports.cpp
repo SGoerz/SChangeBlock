@@ -33,6 +33,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// autocov
+NumericMatrix autocov(NumericMatrix X, NumericVector b, int direction);
+RcppExport SEXP _SChangeBlock_autocov(SEXP XSEXP, SEXP bSEXP, SEXP directionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type b(bSEXP);
+    Rcpp::traits::input_parameter< int >::type direction(directionSEXP);
+    rcpp_result_gen = Rcpp::wrap(autocov(X, b, direction));
+    return rcpp_result_gen;
+END_RCPP
+}
 // genTheta
 NumericMatrix genTheta(int q, NumericVector param, String structure);
 RcppExport SEXP _SChangeBlock_genTheta(SEXP qSEXP, SEXP paramSEXP, SEXP structureSEXP) {
@@ -57,44 +70,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Nullable<IntegerVector> >::type q_(q_SEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type param_(param_SEXP);
     rcpp_result_gen = Rcpp::wrap(dependency(E, Theta_, q_, param_));
-    return rcpp_result_gen;
-END_RCPP
-}
-// gamma
-double gamma(NumericMatrix X, int h1, int h2);
-RcppExport SEXP _SChangeBlock_gamma(SEXP XSEXP, SEXP h1SEXP, SEXP h2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< int >::type h1(h1SEXP);
-    Rcpp::traits::input_parameter< int >::type h2(h2SEXP);
-    rcpp_result_gen = Rcpp::wrap(gamma(X, h1, h2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lrv
-double lrv(NumericMatrix X, NumericVector b);
-RcppExport SEXP _SChangeBlock_lrv(SEXP XSEXP, SEXP bSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(lrv(X, b));
-    return rcpp_result_gen;
-END_RCPP
-}
-// autocov
-NumericMatrix autocov(NumericMatrix X, NumericVector b, int direction);
-RcppExport SEXP _SChangeBlock_autocov(SEXP XSEXP, SEXP bSEXP, SEXP directionSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type b(bSEXP);
-    Rcpp::traits::input_parameter< int >::type direction(directionSEXP);
-    rcpp_result_gen = Rcpp::wrap(autocov(X, b, direction));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -128,11 +103,9 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_SChangeBlock_GMD", (DL_FUNC) &_SChangeBlock_GMD, 1},
     {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 2},
+    {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 3},
     {"_SChangeBlock_genTheta", (DL_FUNC) &_SChangeBlock_genTheta, 3},
     {"_SChangeBlock_dependency", (DL_FUNC) &_SChangeBlock_dependency, 4},
-    {"_SChangeBlock_gamma", (DL_FUNC) &_SChangeBlock_gamma, 3},
-    {"_SChangeBlock_lrv", (DL_FUNC) &_SChangeBlock_lrv, 2},
-    {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 3},
     {"_SChangeBlock_sSizes", (DL_FUNC) &_SChangeBlock_sSizes, 4},
     {"_SChangeBlock_sOpt", (DL_FUNC) &_SChangeBlock_sOpt, 2},
     {NULL, NULL, 0}

@@ -2,15 +2,34 @@
 % Please edit documentation in R/RcppExports.R
 \name{autocov}
 \alias{autocov}
-\title{Autocorrelation matrix}
+\title{Autocovariance matrix}
 \usage{
 autocov(X, b, direction = 0L)
 }
 \arguments{
 \item{X}{numeric matrix,}
 
-\item{b}{numeric vector containing exactly two values: the bandwidths for the row- reps. column-wise estimation.}
+\item{b}{numeric vector containing two integer values: the bandwidths for the row- reps. column-wise estimation.
+(Up to which lag should the autocovariances be estimated?) If \code{direction} > 0: only one integer must be supplied.
+Bandwidths must be smaller than the dimensions of X.}
+
+\item{direction}{0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances}
+}
+\value{
+A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}.
+If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
 }
 \description{
-Autocorrelation matrix
+Estimates the autocovariance matrix for a given matrix X. Via the parameter \code{direction}, it is possible to estimate only
+row- or columnwise autocovariance matrices, which is useful if the autocovariance function is separable.
+}
+\examples{
+X <- genField(c(20, 20))
+autocov(X, c(4, 4))[1:10, 1:100]
+
+# if separable:
+Sigma1 <- autocov(X, 4, 1)
+Sigma2 <- autocov(X, 4, 2)
+kronecker(Sigma1, Sigma2)[1:10, 1:100]
+
 }
