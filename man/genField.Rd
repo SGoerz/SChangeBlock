@@ -20,13 +20,13 @@ genField(
 
 \item{distr}{function specifying the error distribution.}
 
-\item{type}{alternative type (integer or character). See \code{\link{alternatives}}.}
+\item{type}{change region type (integer or character). See \code{\link{changeRegion}}.}
 
 \item{H}{height of the location shift (numeric value).}
 
-\item{Theta}{matrix specifying the dependency between observations of a 2x2 random field.
+\item{Theta}{matrix specifying the dependency between observations of a 2-dim random field.
 Has to be a 2-dim. matrix where there is an odd number of entries in both dimensions.
-Explanations are given under "Details".}
+Explanations are given in \link{genTheta}..}
 
 \item{q}{dependency parameter for the model order of the MA field (integer > 0).}
 
@@ -34,7 +34,7 @@ Explanations are given under "Details".}
 Both \code{q} and \code{param} are ignored if \code{Theta} is supplied.
 A dependency matrix is generated using \code{\link{genTheta}}.}
 
-\item{...}{additional arguments for the generation of \code{\link{alternatives}}.}
+\item{...}{additional arguments for the generation of \code{\link{changeRegion}}.}
 }
 \value{
 The function returns a matrix of dimension \code{n} that has the \code{\link{class}} "RandomField".
@@ -45,14 +45,7 @@ Generate random fields on a regular grid. Dependency can be modeled to some exte
 \details{
 The dependent random field is generated as follows:
 Denote with \eqn{(e_{ij})} the error matrix from which the random field \eqn{(Y_{ij})}
-(under the hypothesis, i.e. without any location shift) is generated. Assume the given dependency
-matrix \code{Theta} has the dimension \eqn{d_1 \times d_2}, i.e. \code{Theta} = \eqn{(\theta)_{1\leq i \leq d_1 \atop 1 \leq j \leq d_2}}.
-We define \eqn{p_1 = \lfloor d_1 / 2 \rfloor} and \eqn{p_2 = \lfloor d_2 / 2 \rfloor}.
-Then for each observation \eqn{Y_{ij}, \; i = 1, ...,} \code{n[1]}, \eqn{j = 1, ..., } \code{n[2]}
-we compute
-\deqn{Y_{ij} = \sum_{h = -p_1}^{p_1} \sum_{k = -p_2}^{p_2} e_{i + h, j + k} \, \cdot \, \theta_{h + p_1 + 1, k + p_2 + 1}.}
-That is, for each observation, we matrix-multiply the observation and the corresponding surrounding
-ones with the dependency matrix \code{Theta}.
+(under the hypothesis, i.e. without any location shift) is generated.
 }
 \examples{
 genField(c(50, 50))
@@ -60,5 +53,5 @@ genField(c(50, 50), type = 3, Theta = genTheta(1, 0.2))
 
 }
 \seealso{
-\link{alternatives}, \link{genTheta}
+\link{changeRegion}, \link{genTheta}
 }

@@ -4,6 +4,7 @@
 #'
 #'@param X numeric vector or matrix.
 #'@param p1,p2 exponents for sample size n resp. estimated dependency, between 0 and 1.
+#'@param lag lag to which the autocorrelations are to be estimated. Integer > 0 but smaller than the length resp. number of rows and columns of X.
 #'
 #'@details Bandwidth \eqn{\boldsymbol{b}^{(n,m)} = (b_1^{(n)}, b_2^{(m)})} is estimated via
 #'         \deqn{b_i^{(k)} = \min\left(k-1, \max\left(1, k^{0.3} \left(\frac{2\rho_i}{1 - \rho_i^2}\right)^{0.3}\right)\right),} 
@@ -25,18 +26,43 @@
 #'bandwidth(X2, 1/3, 2/3)
 #'
 #' @export
-bandwidth <- function(X, p1, p2)
+bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 {
   if(is.matrix(X))
   {
     n <- nrow(X)
     m <- ncol(X)
     
-    rho1 <- mean(sapply(1:n, function(i) cor(X[i, -m], X[i, -1], method = "spearman")))
-    rho2 <- mean(sapply(1:m, function(i) cor(X[-n, i], X[-1, i], method = "spearman")))
+    # ln <- round(n^s)
+    # lm <- round(m^s)
+
+    if(lag < 1 | lag >= n | lag >= m) stop("Wrong lag supplied!")
     
-    param1 <- min(max(round(m^(p1) * ((2 * rho1) / (1 - rho1^2))^(p2)), 1), m-1)
-    param2 <- min(max(round(n^(p1) * ((2 * rho2) / (1 - rho2^2))^(p2)), 1), n-1)
+    # Res1 <- numeric(floor(n / ln) * floor(m / lm))
+    # Res2 <- Res1
+    # 
+    # index <- 1
+    # 
+    # sapply(seq(1, n - ln + 1, ln), function(i)
+    # {
+    #   t(sapply(seq(1, m - lm + 1, lm), function(j)
+    #   {
+    #     Res1[index] <<- mean(sapply(i:(i+ln-1), function(l) cor(X[l, j:(j+lm-2)], X[l, (j+1):(j+lm-1)], method = "spearman")))
+    #     Res2[index] <<- mean(sapply(j:(j+lm-1), function(k) cor(X[i:(i+ln-2), k], X[(i+1):(i+ln-1), k], method = "spearman")))
+    #     
+    #     index <<- index + 1
+    #   }))
+    # })
+    # 
+    # rho1 <- abs(median(Res1))
+    # rho2 <- abs(median(Res2))
+
+    rho1 <- abs(mean(sapply(1:n, function(i) cor(X[i, 1:(m-lag)], X[i, -c(1:lag)], method = "spearman"))))
+    rho2 <- abs(mean(sapply(1:m, function(i) cor(X[1:(n-lag), i], X[-c(1:lag), i], method = "spearman"))))
+    print(c(rho1, rho2))
+    
+    param1 <- min(max(round(m^(p1) * ((2 * rho1) / (1 - rho1^2))^(p2)), 0), m-1)
+    param2 <- min(max(round(n^(p1) * ((2 * rho2) / (1 - rho2^2))^(p2)), 0), n-1)
     
     if(is.na(param1)) param1 <- 1
     if(is.na(param2)) param2 <- 1
@@ -45,13 +71,17 @@ bandwidth <- function(X, p1, p2)
   } else
   {
     n <- length(X)
-    rho <- abs(cor(X[1:(n-1)], X[2:n], method = "spearman"))
+    if(lag < 1 | lag >= n) stop("Wrong lag supplied!")
+    
+    rho <- abs(cor(X[1:(n-lag)], X[(1+lag):n], method = "spearman"))
     return(min(max(round(n^p1 * (rho / (1 - rho))^p2), 1), n-1))
   }
 }
 
 
 #' De-correlation
+#' 
+#' De-correlates a random field or time series, so that the resulting values can be treated as independent.
 #' 
 #' @param X Random Field, numeric matrix, or time series
 #' @param lags numeric vector containing two integer values: the bandwidths for the row- reps. column-wise autocovariance estimation.
@@ -60,12 +90,37 @@ bandwidth <- function(X, p1, p2)
 #'               2L: square root and inversion via singular value decomposition \cr
 #'               3L: square root via [expm::sqrtm()], inversion via [solve()]
 #' @param separable if the autocovariance function is (assumed to be) separable in the two directions of X, 
-#'                  those two autocovariances can be estimated separately and then combined as a Kronecker product.
+#'                  those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.
+#'                  
+#' @details
+#' The contents of \code{X} are ordered into a vector \eqn{x} column-wise. The autocovariance matrix \eqn{\Sigma} of \eqn{x} is estimated by [autocov()]. 
+#' \eqn{\Sigma} is taken the square root of and being inverted using the functions specified in \code{method}. Then
+#' \deqn{y = \Sigma^{-\frac{1}{2}} (x - \bar{x}).}
+#' Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \eqn{X}.
+#' 
+#'                  
+#' @returns De-correlated random field or time series; same data type and size as input \code{X}.
+#'
+#' @examples
+#' x <- arima.sim(list(ar = 0.4), 200)
+#' y <- decorr(x, 3)
+#' 
+#' \dontrun{
+#' par(mfrow = c(2, 2))
+#' acf(x)
+#' pacf(x)
+#' acf(y)
+#' pacf(y)
+#' par(mfrow = c(1, 1)) }
+#' 
+#' X <- genField(c(20, 20), Theta = genTheta(1, 0.4))
+#' Y <- decorr(X, c(2, 2))
+#' 
 #'
 #' @importFrom robcp modifChol
 #' @importFrom expm sqrtm
 #' @export
-decorr <- function(X, lags, method = 1L, separable = FALSE)
+decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
 {
   if(is.ts(X)) 
   {
@@ -82,10 +137,12 @@ decorr <- function(X, lags, method = 1L, separable = FALSE)
     if(is.vector(X) | is.null(dim(X)))
     {
       lags[2] <- 0
+      M[2] <- 0
       X <- as.matrix(X)
     } else
     {
       lags[2] <- lags[1]
+      M[2] <- M[1]
     }
   }
   
@@ -94,17 +151,18 @@ decorr <- function(X, lags, method = 1L, separable = FALSE)
 
   if(separable)
   {
-    M1 <- autocov(X, c(1, lags[2]), direction = 1)
-    M2 <- autocov(X, c(lags[1], 1), direction = 2)
+    A1 <- autocov(X, c(1, lags[2]), direction = 1, M = M, type = type)
+    A2 <- autocov(X, c(lags[1], 1), direction = 2, M = M, type = type)
     
-    M.invsqrt <- kronecker(invsqrt(M1, method), invsqrt(M2, method))
+    A.invsqrt <- kronecker(invsqrt(A1, method), invsqrt(A2, method))
   } else 
   {
-    M <- autocov(X, lags)
-    M.invsqrt <- invsqrt(M, method)
+    # browser()
+    A <- autocov(X, lags, M = M, type = type)
+    A.invsqrt <- invsqrt(A, method)
   }
 
-  y <- t(M.invsqrt) %*% (x - mean(x))
+  y <- t(A.invsqrt) %*% (x - mean(x))
   if(ncol(X) > 1) Y <- matrix(y, ncol = ncol(X)) else Y <- as.vector(y)
   
   if(!is.null(tspX)) 
@@ -128,7 +186,14 @@ invsqrt <- function(M, method = 1L)
     {
       Mchol <- modifChol(M)
     }
-    return(solve(Mchol))
+    
+    res <- tryCatch(solve(Mchol), error = function(e) e)
+    # if("error" %in% class(res))
+    # {
+    #   browser()
+    # }
+    
+    return(res)
   } else if(method == 2L)
   {
     res <- svd(M)

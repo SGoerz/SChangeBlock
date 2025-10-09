@@ -4,7 +4,7 @@
 \alias{decorr}
 \title{De-correlation}
 \usage{
-decorr(X, lags, method = 1L, separable = FALSE)
+decorr(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
 }
 \arguments{
 \item{X}{Random Field, numeric matrix, or time series}
@@ -17,8 +17,34 @@ decorr(X, lags, method = 1L, separable = FALSE)
 3L: square root via \code{\link[expm:sqrtm]{expm::sqrtm()}}, inversion via \code{\link[=solve]{solve()}}}
 
 \item{separable}{if the autocovariance function is (assumed to be) separable in the two directions of X,
-those two autocovariances can be estimated separately and then combined as a Kronecker product.}
+those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.}
+}
+\value{
+De-correlated random field or time series; same data type and size as input \code{X}.
 }
 \description{
-De-correlation
+De-correlates a random field or time series, so that the resulting values can be treated as independent.
+}
+\details{
+The contents of \code{X} are ordered into a vector \eqn{x} column-wise. The autocovariance matrix \eqn{\Sigma} of \eqn{x} is estimated by \code{\link[=autocov]{autocov()}}.
+\eqn{\Sigma} is taken the square root of and being inverted using the functions specified in \code{method}. Then
+\deqn{y = \Sigma^{-\frac{1}{2}} (x - \bar{x}).}
+Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \eqn{X}.
+}
+\examples{
+x <- arima.sim(list(ar = 0.4), 200)
+y <- decorr(x, 3)
+
+\dontrun{
+par(mfrow = c(2, 2))
+acf(x)
+pacf(x)
+acf(y)
+pacf(y)
+par(mfrow = c(1, 1)) }
+
+X <- genField(c(20, 20), Theta = genTheta(1, 0.4))
+Y <- decorr(X, c(2, 2))
+
+
 }

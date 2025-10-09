@@ -1,13 +1,13 @@
-test_that("alternatives returns the correct format", {
-  expect_equal(class(alternatives(c(50, 50), type = "1a")), "integer")
-  expect_equal(class(alternatives(c(50, 50), type = "1b")), "integer")
-  expect_equal(class(alternatives(c(50, 50), type = "1c")), "integer")
-  expect_equal(class(alternatives(c(50, 50), type = 2)), "integer")
-  expect_equal(class(alternatives(c(50, 50), type = 4)), "integer")
-  expect_equal(class(alternatives(c(50, 50), type = 5)), "integer")
+test_that("changeRegion returns the correct format", {
+  expect_equal(class(changeRegion(c(50, 50), type = "1a")), "integer")
+  expect_equal(class(changeRegion(c(50, 50), type = "1b")), "integer")
+  expect_equal(class(changeRegion(c(50, 50), type = "1c")), "integer")
+  expect_equal(class(changeRegion(c(50, 50), type = 2)), "integer")
+  expect_equal(class(changeRegion(c(50, 50), type = 4)), "integer")
+  expect_equal(class(changeRegion(c(50, 50), type = 5)), "integer")
   
-  expect_equal(class(alternatives(c(50, 50), type = 3)), "numeric")
-  expect_length(alternatives(c(50, 50), type = 3), 50^2)
+  expect_equal(class(changeRegion(c(50, 50), type = 3)), c("matrix", "array"))
+  expect_length(changeRegion(c(50, 50), type = 3), 50^2)
 })
 
 test_that("genField returns the correct format", {

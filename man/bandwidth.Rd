@@ -4,12 +4,14 @@
 \alias{bandwidth}
 \title{Bandwidth estimation}
 \usage{
-bandwidth(X, p1, p2)
+bandwidth(X, p1 = 0.3, p2 = 0.3, lag = 1)
 }
 \arguments{
 \item{X}{numeric vector or matrix.}
 
 \item{p1, p2}{exponents for sample size n resp. estimated dependency, between 0 and 1.}
+
+\item{lag}{lag to which the autocorrelations are to be estimated. Integer > 0 but smaller than the length resp. number of rows and columns of X.}
 }
 \value{
 A numeric vector containing one or two elements, depending on if a vector or matrix is supplied.

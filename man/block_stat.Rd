@@ -9,9 +9,9 @@ block_stat(x, s, fun = "gmd", varEstim = var)
 \arguments{
 \item{x}{times series or random field to be tested. Either a numeric vector or a numeric matrix.}
 
-\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.}
+\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
 
-\item{fun}{Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA".}
+\item{fun}{Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA".}
 
 \item{varEstim}{variance estimator or variance estimation of the whole field or times series.
 Either a function to estimate the variance with, or a numeric value.}
@@ -33,7 +33,6 @@ the blocks are computed. Then the function \code{fun} is applied to the block me
 \item gmd: Gini's mean difference
 \item var: Ordinary variance estimator
 \item jb: Jarque-Bera test
-\item ks: Kolmogorov-Smirnov test
 \item grubbs: Grubbs test for outliers
 \item ANOVA: simple ANOVA.
 }

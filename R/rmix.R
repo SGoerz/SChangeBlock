@@ -7,6 +7,9 @@
 #' @param h mean of the contamination distribution, numeric.
 #' @param sigma standard deviation of the contamination distribution, numeric.
 #'
+#' @details The resulting sample is drawn from the distribution
+#' \deqn{(1 - q)\mathcal{N}(0, 1)\; + \; q \mathcal{N}(h, \sigma^2).}
+#'
 #' @return Numeric vector of length n containing the random sample.
 #'
 #' @examples
@@ -22,7 +25,7 @@ rmix <- function(n, q = 0.01, h = 10, sigma = 1)
 {
   x <- rnorm(n)
   index <- sample(n, rbinom(1, n, q))
-  x[index] <- (x[index] + h) * sigma
+  x[index] <- sigma * x[index] + h
   return(x)
 }
 

@@ -3,7 +3,7 @@
 #' Returns the p-value of a test statistic according to the block test for structural changes.
 #' 
 #' @param tn test statistic
-#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block_stat}} for details).
+#' @param fun Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).
 #' 
 #' @returns A numeric value between 0 and 1.
 #' 
@@ -26,11 +26,11 @@ block_pValue <- function(tn, fun = "gmd")
 #' Block test for structural changes
 #' 
 #' A test to detect whether an underlying time series or random field is stationary (hypothesis)
-#' or if there is location shift present in a region.
+#' or if there is a location shift present in a region (alternative).
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
-#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block_stat}} for details).
+#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. . Default is \code{\link{sOpt}}\code{(n, 0.6)}.
+#' @param fun Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).
 #' @param varEstim variance estimator or variance estimation of the whole field or times series.
 #'                 Either a function to estimate the variance with, or a numeric value.
 #'

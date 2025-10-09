@@ -9,9 +9,9 @@ block_test(x, s, fun = "gmd", varEstim = var)
 \arguments{
 \item{x}{times series or random field to be tested. Either a numeric vector or a numeric matrix.}
 
-\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.}
+\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. . Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
 
-\item{fun}{Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block_stat}} for details).}
+\item{fun}{Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).}
 
 \item{varEstim}{variance estimator or variance estimation of the whole field or times series.
 Either a function to estimate the variance with, or a numeric value.}
@@ -26,7 +26,7 @@ A list of the class "htest" containing the following components:
 }
 \description{
 A test to detect whether an underlying time series or random field is stationary (hypothesis)
-or if there is location shift present in a region.
+or if there is a location shift present in a region (alternative).
 }
 \examples{
 # time series with a shift 

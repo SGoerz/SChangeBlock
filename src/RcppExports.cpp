@@ -22,27 +22,56 @@ BEGIN_RCPP
 END_RCPP
 }
 // Mu
-NumericVector Mu(NumericMatrix X, IntegerVector l);
-RcppExport SEXP _SChangeBlock_Mu(SEXP XSEXP, SEXP lSEXP) {
+NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group, Rcpp::Nullable<Rcpp::IntegerVector> l);
+RcppExport SEXP _SChangeBlock_Mu(SEXP xSEXP, SEXP groupSEXP, SEXP lSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RObject >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::RObject> >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type l(lSEXP);
+    rcpp_result_gen = Rcpp::wrap(Mu(x, group, l));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gamma
+double gamma(NumericMatrix X, int h1, int h2);
+RcppExport SEXP _SChangeBlock_gamma(SEXP XSEXP, SEXP h1SEXP, SEXP h2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type l(lSEXP);
-    rcpp_result_gen = Rcpp::wrap(Mu(X, l));
+    Rcpp::traits::input_parameter< int >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< int >::type h2(h2SEXP);
+    rcpp_result_gen = Rcpp::wrap(gamma(X, h1, h2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gammaDiff
+double gammaDiff(NumericMatrix X, int h1, int h2);
+RcppExport SEXP _SChangeBlock_gammaDiff(SEXP XSEXP, SEXP h1SEXP, SEXP h2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
+    Rcpp::traits::input_parameter< int >::type h1(h1SEXP);
+    Rcpp::traits::input_parameter< int >::type h2(h2SEXP);
+    rcpp_result_gen = Rcpp::wrap(gammaDiff(X, h1, h2));
     return rcpp_result_gen;
 END_RCPP
 }
 // autocov
-NumericMatrix autocov(NumericMatrix X, NumericVector b, int direction);
-RcppExport SEXP _SChangeBlock_autocov(SEXP XSEXP, SEXP bSEXP, SEXP directionSEXP) {
+NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M, int direction, int type);
+RcppExport SEXP _SChangeBlock_autocov(SEXP XSEXP, SEXP bSEXP, SEXP MSEXP, SEXP directionSEXP, SEXP typeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type X(XSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type b(bSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type M(MSEXP);
     Rcpp::traits::input_parameter< int >::type direction(directionSEXP);
-    rcpp_result_gen = Rcpp::wrap(autocov(X, b, direction));
+    Rcpp::traits::input_parameter< int >::type type(typeSEXP);
+    rcpp_result_gen = Rcpp::wrap(autocov(X, b, M, direction, type));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -102,8 +131,10 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_SChangeBlock_GMD", (DL_FUNC) &_SChangeBlock_GMD, 1},
-    {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 2},
-    {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 3},
+    {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 3},
+    {"_SChangeBlock_gamma", (DL_FUNC) &_SChangeBlock_gamma, 3},
+    {"_SChangeBlock_gammaDiff", (DL_FUNC) &_SChangeBlock_gammaDiff, 3},
+    {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 5},
     {"_SChangeBlock_genTheta", (DL_FUNC) &_SChangeBlock_genTheta, 3},
     {"_SChangeBlock_dependency", (DL_FUNC) &_SChangeBlock_dependency, 4},
     {"_SChangeBlock_sSizes", (DL_FUNC) &_SChangeBlock_sSizes, 4},

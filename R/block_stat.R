@@ -3,8 +3,8 @@
 #' Computes test statistics of the block test on structural changes.
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
-#' @param fun Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA".
+#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.
+#' @param fun Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA".
 #' @param varEstim variance estimator or variance estimation of the whole field or times series.
 #'                 Either a function to estimate the variance with, or a numeric value.
 #'                 
@@ -14,7 +14,6 @@
 #' * gmd: Gini's mean difference
 #' * var: Ordinary variance estimator
 #' * jb: Jarque-Bera test
-#' * ks: Kolmogorov-Smirnov test
 #' * grubbs: Grubbs test for outliers
 #' * ANOVA: simple ANOVA.
 #' 
@@ -43,15 +42,16 @@
 #' @export
 block_stat <- function(x, s, fun = "gmd", varEstim = var)
 {
-  if(is.vector(x) | is.ts(x)) x <- matrix(x)
-  n <- dim(x)
+  if(is.vector(x) | is.ts(x)) n <- length(x) else n <- dim(x)
+  
+  if(missing(s)) s <- sOpt(n, 0.6)
   
   # CAREFUL: bn is the product of all dimensions, but ln is still a vector since
   # it is needed for the ANOVA
   ln <- round(n^s)
   bn <- prod(floor(n / ln))
   
-  m <- Mu(x, ln)
+  m <- Mu(x, l = ln)
   if(is.function(varEstim))
   {
     sigma_x <- varEstim(as.vector(x))

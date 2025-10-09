@@ -9,7 +9,7 @@ block_pValue(tn, fun = "gmd")
 \arguments{
 \item{tn}{test statistic}
 
-\item{fun}{Character string; one of "gmd" (default), "var", "jb", "ks", "grubbs", "ANOVA" (see \code{\link{block_stat}} for details).}
+\item{fun}{Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).}
 }
 \value{
 A numeric value between 0 and 1.

@@ -1,8 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Optimal sizes 
-//' 
+
 //' @param n integer value.
 //' @param lower,upper lower and upper search border, between 0 and 1.
 //' @param step size of the step for the search, between 0 and 1.
@@ -24,37 +23,37 @@ using namespace Rcpp;
 //' @export
 // [[Rcpp::export]]
 DataFrame sSizes(int n, double lower = 0.5, double upper = 1, double step = 0.1)
-{
-  if(lower > upper) stop("invalid search interval");
-  int N = floor((upper - lower) / step) + 1;
-  NumericVector s(N);
-  NumericVector ln(N);
-  NumericVector bn(N);
-  NumericVector lnbn(N);
-  NumericVector diff(N);
-  
-  s(0) = lower; 
-  ln(0) = round(pow(n, s(0)));
-  bn(0) = floor(n / ln(0));
-  lnbn(0) = ln(0) * bn(0);
-  diff(0) = n - lnbn(0);
-  
-  for(int i = 1; i < N; i++)
-  {
-    s(i) = s(i-1) + step;
-    ln(i) = round(pow(n, s(i)));
-    bn(i) = floor(n / ln(i));
-    lnbn(i) = ln(i) * bn(i);
-    diff(i) = n - lnbn(i);
-  }
-  
-  DataFrame df = DataFrame::create(Named("n") = n, 
-                                   Named("s") = s,
-                                   Named("ln") = ln, 
-                                   Named("bn") = bn, 
-                                   Named("ln*bn") = lnbn, 
-                                   Named("diff") = diff);
-  return df;
+ {
+   if(lower > upper) stop("invalid search interval");
+   int N = floor((upper - lower) / step) + 1;
+   NumericVector s(N);
+   NumericVector ln(N);
+   NumericVector bn(N);
+   NumericVector lnbn(N);
+   NumericVector diff(N);
+   
+   s(0) = lower; 
+   ln(0) = round(pow(n, s(0)));
+   bn(0) = floor(n / ln(0));
+   lnbn(0) = ln(0) * bn(0);
+   diff(0) = n - lnbn(0);
+   
+   for(int i = 1; i < N; i++)
+   {
+     s(i) = s(i-1) + step;
+     ln(i) = round(pow(n, s(i)));
+     bn(i) = floor(n / ln(i));
+     lnbn(i) = ln(i) * bn(i);
+     diff(i) = n - lnbn(i);
+   }
+   
+   DataFrame df = DataFrame::create(Named("n") = n, 
+                                    Named("s") = s,
+                                    Named("ln") = ln, 
+                                    Named("bn") = bn, 
+                                    Named("ln*bn") = lnbn, 
+                                    Named("diff") = diff);
+   return df;
 }
 
 //' Optimal parameter s
@@ -74,36 +73,36 @@ DataFrame sSizes(int n, double lower = 0.5, double upper = 1, double step = 0.1)
 // [[Rcpp::export]]
 NumericVector sOpt(IntegerVector n, double s = 0.6)
 {
-  int N = n.length();
-  NumericVector out(N);
-  DataFrame df; 
-  NumericVector exp;
-  NumericVector diff;
-  int j, Ndiff;
-  double minDiff;
-  
-  for(int i = 0; i < N; i++)
-  {
-    df = sSizes(n(i), 0.5, 1, 0.001);
-    exp = df["s"];
-    diff = df["diff"];
-    Ndiff = diff.length();
-    
-    j = 0;
-    out(i) = exp(0);
-    minDiff = R_PosInf;
-    
-    while(j < Ndiff && (diff(j) != 0 || fabs(s - exp(j)) < minDiff))
-    {
-      if(diff(j) == 0) 
-      {
-        minDiff = fabs(s - exp(j));
-        out(i) = exp(j);
-      }
-      
-      j++;
-    }
-  }
-  
-  return out;
+   int N = n.length();
+   NumericVector out(N);
+   DataFrame df; 
+   NumericVector exp;
+   NumericVector diff;
+   int j, Ndiff;
+   double minDiff;
+   
+   for(int i = 0; i < N; i++)
+   {
+     df = sSizes(n(i), 0.5, 1, 0.001);
+     exp = df["s"];
+     diff = df["diff"];
+     Ndiff = diff.length();
+     
+     j = 0;
+     out(i) = exp(0);
+     minDiff = R_PosInf;
+     
+     while(j < Ndiff && (diff(j) != 0 || fabs(s - exp(j)) < minDiff))
+     {
+       if(diff(j) == 0) 
+       {
+         minDiff = fabs(s - exp(j));
+         out(i) = exp(j);
+       }
+       
+       j++;
+     }
+   }
+   
+   return out;
 }

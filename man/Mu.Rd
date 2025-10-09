@@ -4,12 +4,15 @@
 \alias{Mu}
 \title{Mu}
 \usage{
-Mu(X, l)
+Mu(x, group = NULL, l = NULL)
 }
 \arguments{
-\item{X}{Numeric vector or matrix.}
+\item{x}{Numeric vector or matrix.}
 
-\item{l}{block length. Numeric vector of length 1 or 2, depending on the number of dimensions of X.}
+\item{group}{strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X.
+Overwrites \code{l} if specified.}
+
+\item{l}{block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.}
 }
 \value{
 A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.

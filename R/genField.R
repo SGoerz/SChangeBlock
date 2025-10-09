@@ -6,28 +6,21 @@
 #'
 #' @param n dimensions of the requested random field. Numeric vector.
 #' @param distr function specifying the error distribution.
-#' @param type alternative type (integer or character). See \code{\link{alternatives}}.
+#' @param type change region type (integer or character). See \code{\link{changeRegion}}.
 #' @param H height of the location shift (numeric value).
-#' @param Theta matrix specifying the dependency between observations of a 2x2 random field. 
+#' @param Theta matrix specifying the dependency between observations of a 2-dim random field. 
 #'            Has to be a 2-dim. matrix where there is an odd number of entries in both dimensions. 
-#'            Explanations are given under "Details".
+#'            Explanations are given in [genTheta]..
 #' @param q dependency parameter for the model order of the MA field (integer > 0). 
 #' @param param dependency parameters for the model parameters of the MA field (numeric vector.) 
 #'              Both \code{q} and \code{param} are ignored if \code{Theta} is supplied.
 #'              A dependency matrix is generated using \code{\link{genTheta}}.
-#' @param ... additional arguments for the generation of \code{\link{alternatives}}.
+#' @param ... additional arguments for the generation of \code{\link{changeRegion}}.
 #'
 #' @details
 #' The dependent random field is generated as follows: 
 #' Denote with \eqn{(e_{ij})} the error matrix from which the random field \eqn{(Y_{ij})}
-#' (under the hypothesis, i.e. without any location shift) is generated. Assume the given dependency
-#' matrix \code{Theta} has the dimension \eqn{d_1 \times d_2}, i.e. \code{Theta} = \eqn{(\theta)_{1\leq i \leq d_1 \atop 1 \leq j \leq d_2}}.
-#' We define \eqn{p_1 = \lfloor d_1 / 2 \rfloor} and \eqn{p_2 = \lfloor d_2 / 2 \rfloor}. 
-#' Then for each observation \eqn{Y_{ij}, \; i = 1, ...,} \code{n[1]}, \eqn{j = 1, ..., } \code{n[2]}
-#' we compute
-#' \deqn{Y_{ij} = \sum_{h = -p_1}^{p_1} \sum_{k = -p_2}^{p_2} e_{i + h, j + k} \, \cdot \, \theta_{h + p_1 + 1, k + p_2 + 1}.}
-#' That is, for each observation, we matrix-multiply the observation and the corresponding surrounding 
-#' ones with the dependency matrix \code{Theta}.
+#' (under the hypothesis, i.e. without any location shift) is generated. 
 #'
 #' @returns
 #' The function returns a matrix of dimension \code{n} that has the \code{\link{class}} "RandomField".
@@ -36,7 +29,7 @@
 #' genField(c(50, 50))
 #' genField(c(50, 50), type = 3, Theta = genTheta(1, 0.2))
 #' 
-#' @seealso [alternatives], [genTheta]
+#' @seealso [changeRegion], [genTheta]
 #'
 #' @export
 genField <- function(n, distr = rnorm, type = 0L, H = 100, 
@@ -66,16 +59,16 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
     X <- dependency(X, Theta, q, param)
   } 
   
-  ## add alternative:
+  ## add change region:
   if(type != 3L && type != 0L)
   {
     alt <- numeric(prod(n))
-    altIndex <- alternatives(n, type = type, ...)
+    altIndex <- changeRegion(n, type = type, ...)
     alt[altIndex] <- H / prod(n)^(0.5)# / (2 * length(altIndex))
     X <- X + alt
   } else if(type == 3L)
   {
-    X <- X + alternatives(n, type = 3L) * H
+    X <- X + changeRegion(n, type = 3L) * H
   }
   
   class(X) <- "RandomField"
@@ -83,37 +76,41 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
 }
 
 
-#' Generate alternatives
+#' Change Region
+#' 
+#' Generates the indices for different types of change regions.
 #'
-#' @param n dimensions of the requested random field. Numeric vector.
+#' @param n dimensions of the random field. Numeric vector.
 #' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
-#' @param type alternative type (integer or character). See "Details".
-#' @param middle,delta,distFun parameters for alternative 4L. See "Details".
+#' @param type change region type (integer or character). See "Details".
+#' @param middle,delta,distFun parameters for type 4L. See "Details".
 #' 
 #' @return 
-#' \item{Types 1, 2, 4, 5}{A vector of indices.}
-#' \item{Type 3}{A numeric (n x n) matrix containing the heights of the shifts.}
+#' \item{Types 1a, 1b, 1c, 2, 4, 5}{A vector of indices.}
+#' \item{Type 3}{A numeric (n x n) matrix containing the heights of the shifts at the corresponding locations.}
 #' 
 #' @details
-#' Alternatives: 
+#' Change region types: 
 #' * 1L or "1a": exactly one block is shifted
 #' * "1b": size of the shift region is one block, but the shift region lies in two blocks
 #' * "1c": size of the shift region is one block, but the shift region lies in four blocks
 #' * 2L: exactly half of the data is shifted
 #' * 3L: there is a steady increase from left to right
-#' * 4L: a "circle" including everything within \code{distFun} \code{delta} from \code{middle} is shifted
+#' * 4L: 
 #' * 5L: for demonstration purposes: the field is divided into 10 "columns". Every other column is shifted
+#' * 6L: 
+#' * 7L: a "circle" including everything within \code{distFun} \code{delta} from \code{middle} is shifted
 #' 
 #' @seealso [genField]
 #' 
 #' @examples
-#' alternatives(c(50, 50), 0.6)
-#' alternatives(c(50, 50), 0.6, type = 4L, middle = c(10, 10))
-#' alternatives(c(50, 50), 0.6, type = 3L)
-#' 
+#' changeRegion(c(50, 50), 0.6, "1a")
+#' changeRegion(c(50, 50), type = 2)
+#' changeRegion(c(50, 50), type = 3L)
+#' changeRegion(c(50, 50), type = 7L, middle = c(10, 10))
 #' 
 #' @export
-alternatives <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
+changeRegion <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
 {
   if(missing(s)) s <- sOpt(n, 0.6)
   ln <- round(n^s)
@@ -161,7 +158,7 @@ alternatives <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
   } else if(type == 3L)
   {
     # steady increase from left to right
-    return(rep(1 / sqrt(prod(n)) * (0:(n[1]-1)) / (n[1] - 1), each = n[2]))
+    return(matrix(rep(1 / sqrt(prod(n)) * (0:(n[2]-1)) / (n[2] - 1), each = n[1]), nrow = n[1]))
   } else if(type == 5L)
   {
     # field is divided into 10 "columns", every other column is shifted
@@ -175,11 +172,14 @@ alternatives <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
     index <- unlist(sapply(1:upper, function(i) ((i - 1) * n[1] + 1):((i - 1) * n[1] + i)))
   } else if(type == 4L)
   {
-    i1 <- floor(n / 4)
+    i1 <- floor(n / 4)# + as.integer((n) %% 4 > 0)
     i2 <- floor(n / 2)
+    # i2 <- floor(n / 2) + as.integer((n) %% 4 > 0)
     
-    index <- c(sapply(seq(i1[1] * n[2] + 1, i2[1] * n[2], n[1]), function(x) x:(x + i2[1] - 1)), 
-               sapply(seq(i1[1] + 1, i1[1] * n[2], n[1]), function(x) x:(x + i1[1] - 1)))
+    index <- c(sapply(seq(i1[2] * n[1] + 1, i2[2] * n[1], n[1]), function(x) x:(x + i2[1] - 1)), 
+               # rectangle
+               sapply(seq(i1[1] + 1, i1[2] * n[1], n[1]), function(x) x:(x + (i2[1] - i1[1]) - 1)))
+               # square
   }
 
   # alt[index] <- H / prod(n)^(0.43)

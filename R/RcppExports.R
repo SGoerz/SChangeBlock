@@ -22,8 +22,10 @@ GMD <- function(x) {
 #' 
 #' This function returns a vector of the block means for a given random field X.
 #' 
-#' @param X Numeric vector or matrix.
-#' @param l block length. Numeric vector of length 1 or 2, depending on the number of dimensions of X.
+#' @param x Numeric vector or matrix.
+#' @param group strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X.
+#'        Overwrites `l` if specified.
+#' @param l block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.
 #' 
 #' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.
 #' 
@@ -35,17 +37,27 @@ GMD <- function(x) {
 #' image(matrix(M, ncol = 5))
 #' 
 #' @export
-Mu <- function(X, l) {
-    .Call('_SChangeBlock_Mu', PACKAGE = 'SChangeBlock', X, l)
+Mu <- function(x, group = NULL, l = NULL) {
+    .Call('_SChangeBlock_Mu', PACKAGE = 'SChangeBlock', x, group, l)
+}
+
+#' @export
+gamma <- function(X, h1, h2) {
+    .Call('_SChangeBlock_gamma', PACKAGE = 'SChangeBlock', X, h1, h2)
+}
+
+#' @export
+gammaDiff <- function(X, h1, h2) {
+    .Call('_SChangeBlock_gammaDiff', PACKAGE = 'SChangeBlock', X, h1, h2)
 }
 
 #' Autocovariance matrix
 #' 
-#' Estimates the autocovariance matrix for a given matrix X. Via the parameter \code{direction}, it is possible to estimate only 
+#' Estimates the autocovariance matrix for a given data matrix X. Via the parameter \code{direction}, it is possible to estimate only 
 #' row- or columnwise autocovariance matrices, which is useful if the autocovariance function is separable.
 #' 
 #' @param X numeric matrix,
-#' @param b numeric vector containing two integer values: the bandwidths for the row- reps. column-wise estimation.
+#' @param b numeric vector containing two integer values: the bandwidths for the row- resp. column-wise estimation.
 #'        (Up to which lag should the autocovariances be estimated?) If \code{direction} > 0: only one integer must be supplied. 
 #'        Bandwidths must be smaller than the dimensions of X.
 #' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances
@@ -58,13 +70,13 @@ Mu <- function(X, l) {
 #' autocov(X, c(4, 4))[1:10, 1:100]
 #' 
 #' # if separable:
-#' Sigma1 <- autocov(X, 4, 1)
-#' Sigma2 <- autocov(X, 4, 2)
+#' Sigma1 <- autocov(X, 4, direction = 1)
+#' Sigma2 <- autocov(X, 4, direction = 2)
 #' kronecker(Sigma1, Sigma2)[1:10, 1:100]
 #' 
 #' @export
-autocov <- function(X, b, direction = 0L) {
-    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, direction)
+autocov <- function(X, b, M = as.integer( c(1, 1)), direction = 0L, type = 0L) {
+    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, M, direction, type)
 }
 
 #' Dependency Matrix Theta
@@ -99,8 +111,6 @@ dependency <- function(E, Theta_ = NULL, q_ = NULL, param_ = NULL) {
     .Call('_SChangeBlock_dependency', PACKAGE = 'SChangeBlock', E, Theta_, q_, param_)
 }
 
-#' Optimal sizes 
-#' 
 #' @param n integer value.
 #' @param lower,upper lower and upper search border, between 0 and 1.
 #' @param step size of the step for the search, between 0 and 1.

@@ -3,7 +3,7 @@
 \name{sSizes}
 \alias{sSizes}
 \alias{sOpt}
-\title{Optimal sizes}
+\title{Optimal parameter s}
 \usage{
 sSizes(n, lower = 0.5, upper = 1, step = 0.1)
 

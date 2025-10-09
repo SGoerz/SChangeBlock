@@ -1,8 +1,8 @@
 test_that("autocov has the correct format", {
   X <- genField(c(20, 30))
-  Sigma <- autocov(X, c(4, 4))
-  Sigma1 <- autocov(X, 4, 1)
-  Sigma2 <- autocov(X, 4, 2)
+  Sigma <- autocov(X, b = c(4, 4))
+  Sigma1 <- autocov(X, b = 4, direction = 1)
+  Sigma2 <- autocov(X, b = 4, direction = 2)
   
   expect_equal(dim(Sigma), c(600, 600))
   expect_equal(dim(Sigma1), c(30, 30))
