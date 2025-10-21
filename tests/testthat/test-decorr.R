@@ -9,7 +9,7 @@ test_that("bandwidth estimation returns the correct format", {
 
 test_that("de-correlation is working correctly", {
   X <- genField(c(20, 20), Theta = genTheta(10, 0.3))
-  Y <- decorr(X, bandwidth(X, 0.3, 0.3))
+  Y <- decorr(X, lags = bandwidth(X, 0.3, 0.3))
   
   expect_equal(class(X), class(Y))
   

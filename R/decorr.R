@@ -59,8 +59,7 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 
     rho1 <- abs(mean(sapply(1:n, function(i) cor(X[i, 1:(m-lag)], X[i, -c(1:lag)], method = "spearman"))))
     rho2 <- abs(mean(sapply(1:m, function(i) cor(X[1:(n-lag), i], X[-c(1:lag), i], method = "spearman"))))
-    print(c(rho1, rho2))
-    
+
     param1 <- min(max(round(m^(p1) * ((2 * rho1) / (1 - rho1^2))^(p2)), 0), m-1)
     param2 <- min(max(round(n^(p1) * ((2 * rho2) / (1 - rho2^2))^(p2)), 0), n-1)
     
@@ -132,18 +131,15 @@ decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
     clsX <- class(X)
   }
   
-  if(length(lags) == 1)
+  if(is.vector(X) | is.null(dim(X)))
   {
-    if(is.vector(X) | is.null(dim(X)))
-    {
-      lags[2] <- 0
-      M[2] <- 0
-      X <- as.matrix(X)
-    } else
-    {
-      lags[2] <- lags[1]
-      M[2] <- M[1]
-    }
+    lags[2] <- 0
+    M[2] <- 0
+    X <- as.matrix(X)
+  } else 
+  {
+    if(length(lags) == 1) lags[2] <- lags[1]
+    if(length(M) == 1) M[2] <- M[1]
   }
   
   x <- as.vector(X)
