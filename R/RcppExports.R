@@ -31,7 +31,7 @@ GMD <- function(x) {
 #' 
 #' @examples 
 #' X <- genField(c(50, 100), H = 100, type = 2)
-#' M <- Mu(X, c(10, 20))
+#' M <- Mu(X, l = c(10, 20))
 #' 
 #' plot(X)
 #' image(matrix(M, ncol = 5))
@@ -41,12 +41,10 @@ Mu <- function(x, group = NULL, l = NULL) {
     .Call('_SChangeBlock_Mu', PACKAGE = 'SChangeBlock', x, group, l)
 }
 
-#' @export
 gamma <- function(X, h1, h2) {
     .Call('_SChangeBlock_gamma', PACKAGE = 'SChangeBlock', X, h1, h2)
 }
 
-#' @export
 gammaDiff <- function(X, h1, h2) {
     .Call('_SChangeBlock_gammaDiff', PACKAGE = 'SChangeBlock', X, h1, h2)
 }
@@ -60,10 +58,26 @@ gammaDiff <- function(X, h1, h2) {
 #' @param b numeric vector containing two integer values: the bandwidths for the row- resp. column-wise estimation.
 #'        (Up to which lag should the autocovariances be estimated?) If \code{direction} > 0: only one integer must be supplied. 
 #'        Bandwidths must be smaller than the dimensions of X.
-#' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances
+#' @param M numeric vector containing two integer values, only needed for \code{type = 1}, see Details.
+#' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances.
+#' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See Details.
 #' 
 #' @returns A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}. 
 #'          If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
+#'          
+#' @details In this function, the autocovariance matrix of \code{X} is interpreted as the autocovariance matrix of 
+#'          \code{x = as.vector(X)}, i.e. where \code{X} is ordered into a vector column-wise. 
+#'          If \code{type = 0}, the autocovariance to lags \eqn{h_1, h_2} is estimated using the regular estimator
+#'          \deqn{\hat{\gamma}_{\text{reg}}(h_1, h_2) = 
+#'           \frac{1}{(n-h_1)(m-h_2)}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - \bar{Y})(Y_{i+h_1, j+h_2} - \bar{Y}).}
+#'          If \code{type = 1}, the autocovariance to lags \eqn{h_1, h_2} is estimated by a difference-based version, inspired by 
+#'          the estimator of Tecuapetla-Gómez and Munk (2017) for time series:
+#'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff}}^2 -
+#'           \frac{1}{2(n - h_1)(m - h_2)}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - Y_{i + h_1, j + h_2})^2}
+#'          with
+#'          \deqn{\hat{\sigma}_{\text{diff}}^2 = \frac{1}{4} \left(\frac{1}{n(m - M_2)}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
+#'          (Y_{i, j} - Y_{i, j+M_2})^2 + \frac{1}{(n - M_1)m}\sum_{i = 1}^{n-M_1} \sum_{j = 1}^{m} (Y_{i, j} - Y_{i+M_1, j})^2 \right),}
+#'          where \eqn{M_1 =} \code{M[1]}, \eqn{M_2 = } \code{M[2]}.
 #' 
 #' @examples
 #' X <- genField(c(20, 20))
@@ -73,6 +87,9 @@ gammaDiff <- function(X, h1, h2) {
 #' Sigma1 <- autocov(X, 4, direction = 1)
 #' Sigma2 <- autocov(X, 4, direction = 2)
 #' kronecker(Sigma1, Sigma2)[1:10, 1:100]
+#' 
+#' @references
+#' Tecuapetla‐Gómez, I., & Munk, A. (2017). Autocovariance estimation in regression with a discontinuous signal and m‐dependent errors: A difference‐based approach. Scandinavian Journal of Statistics, 44(2), 346-368.
 #' 
 #' @export
 autocov <- function(X, b, M = as.integer( c(1, 1)), direction = 0L, type = 0L) {

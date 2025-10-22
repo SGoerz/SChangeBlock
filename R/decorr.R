@@ -90,6 +90,8 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #'               3L: square root via [expm::sqrtm()], inversion via [solve()]
 #' @param separable if the autocovariance function is (assumed to be) separable in the two directions of X, 
 #'                  those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.
+#' @param M numeric vector containing two integer values, only needed for \code{type = 1}, see [autocov()].
+#' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See [autocov()].
 #'                  
 #' @details
 #' The contents of \code{X} are ordered into a vector \eqn{x} column-wise. The autocovariance matrix \eqn{\Sigma} of \eqn{x} is estimated by [autocov()]. 

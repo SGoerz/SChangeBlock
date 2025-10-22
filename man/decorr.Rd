@@ -18,6 +18,10 @@ decorr(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
 
 \item{separable}{if the autocovariance function is (assumed to be) separable in the two directions of X,
 those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.}
+
+\item{M}{numeric vector containing two integer values, only needed for \code{type = 1}, see \code{\link[=autocov]{autocov()}}.}
+
+\item{type}{0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See \code{\link[=autocov]{autocov()}}.}
 }
 \value{
 De-correlated random field or time series; same data type and size as input \code{X}.

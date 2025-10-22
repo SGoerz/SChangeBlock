@@ -40,7 +40,7 @@ using namespace Rcpp;
 //' 
 //' @examples 
 //' X <- genField(c(50, 100), H = 100, type = 2)
-//' M <- Mu(X, c(10, 20))
+//' M <- Mu(X, l = c(10, 20))
 //' 
 //' plot(X)
 //' image(matrix(M, ncol = 5))
