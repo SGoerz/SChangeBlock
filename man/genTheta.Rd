@@ -21,7 +21,7 @@ This function generates a symmetric dependency matrix \eqn{\Theta} of a
 specific type of spatial MA(q) model.
 }
 \details{
-Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model):
+Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model) for 2-dim. random fields:
 \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{kl}.}
 \eqn{(\theta_{kl}) = \Theta}. \cr \cr
 For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}

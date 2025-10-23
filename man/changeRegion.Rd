@@ -9,7 +9,7 @@ changeRegion(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
 \arguments{
 \item{n}{dimensions of the random field. Numeric vector.}
 
-\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.}
+\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}.}
 
 \item{type}{change region type (integer or character). See "Details".}
 

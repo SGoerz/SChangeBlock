@@ -26,7 +26,7 @@ genField(
 
 \item{Theta}{matrix specifying the dependency between observations of a 2-dim random field.
 Has to be a 2-dim. matrix where there is an odd number of entries in both dimensions.
-Explanations are given in \link{genTheta}..}
+Explanations are given in \link{genTheta}.}
 
 \item{q}{dependency parameter for the model order of the MA field (integer > 0).}
 

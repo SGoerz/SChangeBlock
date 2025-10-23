@@ -29,7 +29,7 @@ block_pValue <- function(tn, fun = "gmd")
 #' or if there is a location shift present in a region (alternative).
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. . Default is \code{\link{sOpt}}\code{(n, 0.6)}.
+#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.
 #' @param fun Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).
 #' @param varEstim variance estimator or variance estimation of the whole field or times series.
 #'                 Either a function to estimate the variance with, or a numeric value.
@@ -57,6 +57,9 @@ block_pValue <- function(tn, fun = "gmd")
 #' X <- genField(c(50, 50), type = 2)
 #' block_test(X, sOpt(50, 0.6), "var")
 #' 
+#' #' # GMD test statistic, scaling variance estimated by the mad
+#' block_stat(X, 0.6, fun = "var", varEstim = mad)
+#' 
 #' @export
 block_test <- function(x, s, fun = "gmd", varEstim = var)
 {
@@ -66,8 +69,8 @@ block_test <- function(x, s, fun = "gmd", varEstim = var)
   
   Dataname <- deparse(substitute(x))
   
-  erg <- list(alternative = "two-sided", method = "Block test for structural changes", 
-              data.name = Dataname, statistic = stat,
+  erg <- list(alternative = "two-sided", method = paste(fun, "block test for structural changes"), 
+              data.name = Dataname, statistic = stat, blocksize = attr(stat, "blocksize"),
               p.value = pval#, lrv = list(method = method, param = attr(stat, "param"), value = attr(stat, "sigma")), 
               )
   

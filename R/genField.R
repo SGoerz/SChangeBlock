@@ -10,7 +10,7 @@
 #' @param H height of the location shift (numeric value).
 #' @param Theta matrix specifying the dependency between observations of a 2-dim random field. 
 #'            Has to be a 2-dim. matrix where there is an odd number of entries in both dimensions. 
-#'            Explanations are given in [genTheta]..
+#'            Explanations are given in [genTheta].
 #' @param q dependency parameter for the model order of the MA field (integer > 0). 
 #' @param param dependency parameters for the model parameters of the MA field (numeric vector.) 
 #'              Both \code{q} and \code{param} are ignored if \code{Theta} is supplied.
@@ -81,7 +81,7 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
 #' Generates the indices for different types of change regions.
 #'
 #' @param n dimensions of the random field. Numeric vector.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
+#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}.
 #' @param type change region type (integer or character). See "Details".
 #' @param middle,delta,distFun parameters for type 4L. See "Details".
 #' 

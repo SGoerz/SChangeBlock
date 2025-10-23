@@ -3,7 +3,7 @@
 #' Computes test statistics of the block test on structural changes.
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.
+#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.
 #' @param fun Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA".
 #' @param varEstim variance estimator or variance estimation of the whole field or times series.
 #'                 Either a function to estimate the variance with, or a numeric value.
@@ -31,13 +31,16 @@
 #' x[1:50] <- x[1:50] + 1
 #' block_stat(x, sOpt(100, 0.6))
 #' 
-#' # field without a shift and ordinary variance
+#' # field without shift and ordinary variance
 #' X <- genField(c(50, 50))
 #' block_stat(X, sOpt(50, 0.6), "var")
 #' 
 #' # field with a shift and ordinary variance
 #' X <- genField(c(50, 50), type = 2)
 #' block_stat(X, sOpt(50, 0.6), "var")
+#' 
+#' # GMD test statistic, scaling variance estimated by the mad
+#' block_stat(X, 0.6, fun = "var", varEstim = mad)
 #'
 #' @export
 block_stat <- function(x, s, fun = "gmd", varEstim = var)
@@ -111,6 +114,8 @@ block_stat <- function(x, s, fun = "gmd", varEstim = var)
   # {
   #   stop("Invalid argument for 'fun'")
   # }
+  
+  attr(res, "blocksize") <- ln
   
   return(res)
 }

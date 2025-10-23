@@ -15,8 +15,8 @@ test_that("block_stat produces the correct format", {
   expect_equal(length(y5), 1)
   expect_equal(length(y6), 1)
   
-  expect_equal(attributes(y5), list(n = 25))
-  expect_equal(attributes(y6), list(k = 25, N = 50^2))
+  expect_equal(attributes(y5), list(n = 25, blocksize = c(10, 10)))
+  expect_equal(attributes(y6), list(k = 25, N = 50^2, blocksize = c(10, 10)))
 })
 
 test_that("block_stat and block_pValue fit together", {

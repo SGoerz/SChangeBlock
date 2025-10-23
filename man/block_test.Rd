@@ -9,7 +9,7 @@ block_test(x, s, fun = "gmd", varEstim = var)
 \arguments{
 \item{x}{times series or random field to be tested. Either a numeric vector or a numeric matrix.}
 
-\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}. . Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
+\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
 
 \item{fun}{Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).}
 
@@ -41,6 +41,9 @@ block_test(X, sOpt(50, 0.6), "var")
 # field with a shift and ordinary variance
 X <- genField(c(50, 50), type = 2)
 block_test(X, sOpt(50, 0.6), "var")
+
+#' # GMD test statistic, scaling variance estimated by the mad
+block_stat(X, 0.6, fun = "var", varEstim = mad)
 
 }
 \seealso{
