@@ -42,6 +42,9 @@ block_pValue <- function(tn, fun = "gmd")
 #'  \item{data.name}{name of the data (character string).}
 #'
 #' @seealso [block_stat], [block_pValue]
+#' 
+#' @references \enc{Görz}{Goerz}, S. and Fried, R. (2025). "Detecting changes in the mean of spatial random fields on a regular grid", \emph{arXiv preprint} \href{https://arxiv.org/abs/2512.11599}{arXiv:2512.11599}
+#' @references Schmidt, S. K. (2024). Detecting changes in the trend function of heteroscedastic time series. Bernoulli, 30(4), 2598-2622.
 #'
 #' @examples
 #' # time series with a shift 

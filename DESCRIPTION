@@ -3,7 +3,7 @@ Title: Spatial structural change detection by an analysis of variability between
 Version: 0.0.1
 Authors@R: 
     c(person("Sheila", "Goerz", email = "sheila.goerz@tu-dortmund.de", role = c("aut", "cre")), person("Roland", "Fried", email = "msnat@statistik.tu-dortmund.de", role = c("ctb", "ths")))
-Description: Provides methods to detect structural changes in time series or random fields (spatial data). Focus is on the detection of abrupt changes or trends in independent data, but the package also provides a function to de-correlate data with dependence. The functions are based on the test suggested in Schmidt (2024) <DOI:10.3150/23-BEJ1686> and the work in Görz and Fried (2025+) ......
+Description: Provides methods to detect structural changes in time series or random fields (spatial data). Focus is on the detection of abrupt changes or trends in independent data, but the package also provides a function to de-correlate data with dependence. The functions are based on the test suggested in Schmidt (2024) <DOI:10.3150/23-BEJ1686> and the work in Görz and Fried (2025) <DOI:10.48550/arXiv.2512.11599>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

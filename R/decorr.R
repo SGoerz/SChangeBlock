@@ -185,11 +185,7 @@ invsqrt <- function(M, method = 1L)
       Mchol <- modifChol(M)
     }
     
-    res <- tryCatch(solve(Mchol), error = function(e) e)
-    # if("error" %in% class(res))
-    # {
-    #   browser()
-    # }
+    res <- solve(Mchol)
     
     return(res)
   } else if(method == 2L)

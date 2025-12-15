@@ -46,6 +46,11 @@ block_test(X, sOpt(50, 0.6), "var")
 block_stat(X, 0.6, fun = "var", varEstim = mad)
 
 }
+\references{
+\enc{Görz}{Goerz}, S. and Fried, R. (2025). "Detecting changes in the mean of spatial random fields on a regular grid", \emph{arXiv preprint} \href{https://arxiv.org/abs/2512.11599}{arXiv:2512.11599}
+
+Schmidt, S. K. (2024). Detecting changes in the trend function of heteroscedastic time series. Bernoulli, 30(4), 2598-2622.
+}
 \seealso{
 \link{block_stat}, \link{block_pValue}
 }
