@@ -1,5 +1,5 @@
 Package: SChangeBlock
-Title: Spatial structural change detection by an analysis of variability between blocks of observations
+Title: Spatial Structural Change Detection by an Analysis of Variability Between Blocks of Observations
 Version: 0.0.1
 Authors@R: 
     c(person("Sheila", "Goerz", email = "sheila.goerz@tu-dortmund.de", role = c("aut", "cre")), person("Roland", "Fried", email = "msnat@statistik.tu-dortmund.de", role = c("ctb", "ths")))
