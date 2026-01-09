@@ -105,14 +105,13 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #' @examples
 #' x <- arima.sim(list(ar = 0.4), 200)
 #' y <- decorr(x, 3)
-#' 
-#' \dontrun{
-#' par(mfrow = c(2, 2))
+#' \donttest{
+#' oldpar <- par(mfrow = c(2, 2))
 #' acf(x)
 #' pacf(x)
 #' acf(y)
 #' pacf(y)
-#' par(mfrow = c(1, 1)) }
+#' par(oldpar) }
 #' 
 #' X <- genField(c(20, 20), Theta = genTheta(1, 0.4))
 #' Y <- decorr(X, c(2, 2))
@@ -123,15 +122,17 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #' @export
 decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
 {
-  if(is.ts(X)) 
-  {
-    tspX <- tsp(X)
-    clsX <- NULL
-  } else
-  { 
-    tspX <- NULL
-    clsX <- class(X)
-  }
+  # if(is.ts(X)) 
+  # {
+  #   tspX <- tsp(X)
+  #   clsX <- NULL
+  # } else
+  # { 
+  #   tspX <- NULL
+  #   clsX <- class(X)
+  # }
+  
+  attrX <- attributes(X)
   
   if(is.vector(X) | is.null(dim(X)))
   {
@@ -163,14 +164,16 @@ decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
   y <- t(A.invsqrt) %*% (x - mean(x))
   if(ncol(X) > 1) Y <- matrix(y, ncol = ncol(X)) else Y <- as.vector(y)
   
-  if(!is.null(tspX)) 
-  {
-    Y <- ts(Y)
-    tsp(Y) <- tspX
-  } else
-  {
-    class(Y) <- clsX
-  }
+  # if(!is.null(tspX)) 
+  # {
+  #   Y <- ts(Y)
+  #   tsp(Y) <- tspX
+  # } else
+  # {
+  #   class(Y) <- clsX
+  # }
+  
+  attributes(Y) <- attrX
   
   return(Y)
 }

@@ -4,7 +4,7 @@
 \alias{plot.RandomField}
 \title{Plot random field}
 \usage{
-\method{plot}{RandomField}(x, main = "", colors, name = "value", ...)
+\method{plot}{RandomField}(x, main = "", colors, name = "value", alpha = 1, p = NULL, ...)
 }
 \arguments{
 \item{x}{\code{RandomField} object.}
@@ -14,6 +14,10 @@
 \item{colors}{vector of colors over which a gradient is created.}
 
 \item{name}{title of the legend, character string.}
+
+\item{alpha}{opacity of the raster tiles. Numeric value between 0 and 1.}
+
+\item{p}{additional ggplot2 component added BEFORE this function's components.}
 
 \item{...}{other parameters to be passed through to plotting functions.}
 }

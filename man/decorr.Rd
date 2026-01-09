@@ -38,14 +38,13 @@ Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \e
 \examples{
 x <- arima.sim(list(ar = 0.4), 200)
 y <- decorr(x, 3)
-
-\dontrun{
-par(mfrow = c(2, 2))
+\donttest{
+oldpar <- par(mfrow = c(2, 2))
 acf(x)
 pacf(x)
 acf(y)
 pacf(y)
-par(mfrow = c(1, 1)) }
+par(oldpar) }
 
 X <- genField(c(20, 20), Theta = genTheta(1, 0.4))
 Y <- decorr(X, c(2, 2))
