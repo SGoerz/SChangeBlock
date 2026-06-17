@@ -20,7 +20,7 @@ GMD <- function(x) {
 
 #' Mu
 #' 
-#' This function returns a vector of the block means for a given random field X.
+#' This function returns a vector of the block means for a given random field x.
 #' 
 #' @param x Numeric vector or matrix.
 #' @param group strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X.

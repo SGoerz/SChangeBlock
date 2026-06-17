@@ -18,7 +18,7 @@ Overwrites \code{l} if specified.}
 A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(x)}.
 }
 \description{
-This function returns a vector of the block means for a given random field X.
+This function returns a vector of the block means for a given random field x.
 }
 \examples{
 X <- genField(c(50, 100), H = 100, type = 2)

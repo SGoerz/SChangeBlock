@@ -38,9 +38,9 @@ mu <- function(x, ln, fun = "mean")
   if(is.na(ln[2])) ln[2] <- 1
   n <- dim(x)
   
-  res <- sapply(seq(ln[1] + 1, n[1] + 1, ln[1]), function(i)
+  res <- sapply(seq(ln[2] + 1, n[2] + 1, ln[2]), function(j)
   {
-    sapply(seq(ln[2] + 1, n[2] + 1, ln[2]), function(j)
+    sapply(seq(ln[1] + 1, n[1] + 1, ln[1]), function(i)
     {
       fun(x[(i - ln[1]):(i - 1), (j - ln[2]):(j - 1)])
     })
