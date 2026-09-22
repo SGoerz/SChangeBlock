@@ -35,6 +35,7 @@ using namespace Rcpp;
 //' @param group strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X.
 //'        Overwrites `l` if specified.
 //' @param l block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.
+//' @param includeEdge logical. If the number of observations divided by the number of blocks is not an integer, should the remaining observations form new blocks or not? 
 //' 
 //' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(x)}.
 //' 
@@ -48,7 +49,8 @@ using namespace Rcpp;
 //' @export
 // [[Rcpp::export]]
 NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue, 
-                 Rcpp::Nullable<Rcpp::IntegerVector> l = R_NilValue)
+                 Rcpp::Nullable<Rcpp::IntegerVector> l = R_NilValue, 
+                 LogicalVector includeEdge = false)
 {
   NumericMatrix X;
   IntegerMatrix Group;
@@ -145,14 +147,31 @@ NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue,
     int b_n = floor(X.nrow() / l_n);
     int b_m = floor(X.ncol() / l_m);
     
+    int ex_n = l_n;
+    int ex_m = l_m;
+    
+    if(includeEdge[0]) 
+    {
+      if(l_n * b_n != X.nrow())
+      {
+        ex_n = X.nrow() - b_n * l_n;
+        b_n++;
+      }
+      if(l_m * b_m != X.ncol())
+      {
+        ex_m = X.ncol() - b_m * l_m;
+        b_m++;
+      } 
+    }
     MuVec = NumericVector(b_n * b_m);
-    int i, j, i2, j2, blocklength;
+    
+    int i, j, i2, j2, blocklength, blocklength2;
     
     blocklength = l_n * l_m;
-    
-    for(i = 0; i < b_n; i++)
+
+    for(i = 0; i < b_n - 1; i++)
     {
-      for(j = 0; j < b_m; j++)
+      for(j = 0; j < b_m - 1; j++)
       {
         MuVec(j * b_n + i) = 0;
         
@@ -166,7 +185,50 @@ NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue,
         
         MuVec(j * b_n + i) /= blocklength;
       }
+      
+      MuVec((b_m - 1) * b_n + i) = 0;
+      blocklength2 = 0;
+        
+      for(i2 = i * l_n; i2 < (i + 1) * l_n; i2++)
+      {
+        for(j2 = (b_m - 1) * l_m; j2 < (b_m - 1) * l_m + ex_m; j2++)
+        {
+          MuVec((b_m - 1) * b_n + i) += X(i2, j2);
+          blocklength2++;
+        }
+      }
+      MuVec((b_m - 1) * b_n + i) /= blocklength2;
     }
+    
+    for(j = 0; j < b_m - 1; j++)
+    {
+      MuVec((j + 1) * b_n - 1) = 0;
+      blocklength2 = 0;
+
+      for(i2 = (b_n - 1) * l_n; i2 < (b_n - 1) * l_n + ex_n; i2++)
+      {
+        for(j2 = j * l_m; j2 < (j + 1) * l_m; j2++)
+        {
+          MuVec((j + 1) * b_n - 1) += X(i2, j2);
+          blocklength2++;
+        }
+      }
+      MuVec((j + 1) * b_n - 1) /= blocklength2;
+    }
+
+    MuVec(b_n * b_m - 1) = 0;
+    blocklength2 = 0;
+    
+    for(i2 = (b_n - 1) * l_n; i2 < (b_n - 1) * l_n + ex_n; i2++)
+    {
+      for(j2 = (b_m - 1) * l_m; j2 < (b_m - 1) * l_m + ex_m; j2++)
+      {
+        MuVec(b_n * b_m - 1) += X(i2, j2);
+        blocklength2++;
+      }
+    }
+    MuVec(b_n * b_m - 1) /= blocklength2;
+    
   } else
   {
     stop("Either 'group' or 'l' needs to be specified");

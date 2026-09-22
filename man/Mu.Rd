@@ -4,7 +4,7 @@
 \alias{Mu}
 \title{Mu}
 \usage{
-Mu(x, group = NULL, l = NULL)
+Mu(x, group = NULL, l = NULL, includeEdge = FALSE)
 }
 \arguments{
 \item{x}{Numeric vector or matrix.}
@@ -13,6 +13,8 @@ Mu(x, group = NULL, l = NULL)
 Overwrites \code{l} if specified.}
 
 \item{l}{block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.}
+
+\item{includeEdge}{logical. If the number of observations divided by the number of blocks is not an integer, should the remaining observations form new blocks or not?}
 }
 \value{
 A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(x)}.

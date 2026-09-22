@@ -11,6 +11,11 @@ Provides methods to detect structural changes in time series or random fields (s
 \author{
 \strong{Maintainer}: Sheila Goerz \email{sheila.goerz@tu-dortmund.de}
 
+Authors:
+\itemize{
+  \item Sheila Goerz \email{sheila.goerz@tu-dortmund.de}
+}
+
 Other contributors:
 \itemize{
   \item Roland Fried \email{msnat@statistik.tu-dortmund.de} [contributor, thesis advisor]

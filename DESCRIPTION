@@ -7,7 +7,6 @@ Description: Provides methods to detect structural changes in time series or ran
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Imports: Rcpp, ggplot2, nortest, expm, robcp, methods
 Depends: R (>= 3.3.1)
 LinkingTo: Rcpp
@@ -17,3 +16,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Date: 2026-05-26
+Config/roxygen2/version: 8.0.0

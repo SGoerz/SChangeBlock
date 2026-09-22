@@ -27,6 +27,35 @@ test_that("Mu computes the correct block sums", {
   expect_equal(Mu(X, l = c(3, 3)), c(-0.04461205, -0.4336385, -0.327058, 0.09453829), 
                tolerance = 1e-7)
   
+  ## include edges:
+  X <- matrix(rnorm(25), ncol = 5)
+  
+  expect_equal(Mu(X, l = c(1, 1)), as.vector(X))
+  expect_equal(Mu(X, l = c(1, 1), includeEdge = TRUE), as.vector(X))
+  
+  X <- matrix(rnorm(30), ncol = 5)
+  
+  expect_equal(Mu(X, l = c(2, 2), includeEdge = FALSE), 
+               c(mean(X[1:2, 1:2]), mean(X[3:4, 1:2]), mean(X[5:6, 1:2]), 
+                 mean(X[1:2, 3:4]), mean(X[3:4, 3:4]), mean(X[5:6, 3:4])))
+  
+  expect_equal(Mu(X, l = c(2, 2), includeEdge = TRUE), 
+               c(mean(X[1:2, 1:2]), mean(X[3:4, 1:2]), mean(X[5:6, 1:2]), 
+                 mean(X[1:2, 3:4]), mean(X[3:4, 3:4]), mean(X[5:6, 3:4]), 
+                 mean(X[1:2, 5]), mean(X[3:4, 5]), mean(X[5:6, 5])))
+  
+  X <- matrix(rnorm(30), ncol = 6)
+  
+  expect_equal(Mu(X, l = c(2, 2), includeEdge = FALSE), 
+               c(mean(X[1:2, 1:2]), mean(X[3:4, 1:2]), 
+                 mean(X[1:2, 3:4]), mean(X[3:4, 3:4]), 
+                 mean(X[1:2, 5:6]), mean(X[3:4, 5:6])))
+  
+  expect_equal(Mu(X, l = c(2, 2), includeEdge = TRUE), 
+               c(mean(X[1:2, 1:2]), mean(X[3:4, 1:2]), mean(X[5, 1:2]), 
+                 mean(X[1:2, 3:4]), mean(X[3:4, 3:4]), mean(X[5, 3:4]), 
+                 mean(X[1:2, 5:6]), mean(X[3:4, 5:6]), mean(X[5, 5:6])))
+  
   # errors:
   expect_error(Mu(1:3, group = 1))
   expect_error(Mu(rnorm(10), l = 0))

@@ -4,21 +4,24 @@
 \alias{cutoff}
 \title{Cut-Off}
 \usage{
-cutoff(X, ln)
+cutoff(X, ln, ex = c(1, 1))
 }
 \arguments{
 \item{X}{data, numeric vector or matrix}
 
 \item{ln}{l block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.}
+
+\item{ex}{number of blocks to cut off per dimension. Integer vector of length 1 or 2.}
 }
 \value{
-A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(X)}.
+If X is a matrix, the return value is a numeric matrix of dimension \code{floor(n[1] / l[1]) x floor(n[2] / l[2])}, where \code{n = dim(X)}.
+Else, if X is a vector, the return value is a numeric vector of length \code{floor(n / l)}, where \code{n = length(X)}.
 }
 \description{
 This function returns a vector of the cut block means for a given time series or random field X.
 }
 \details{
-For each block of size \code{ln[1]} \eqn{\cdot} \code{ln[2]}, the \code{ln[1]}-th row and the \code{ln[2]}-th column are deleted. Then, the mean is taken over the remaining data points.
+For each block of size \code{ln[1]} \eqn{\cdot} \code{ln[2]}, the last \code{ex[1]} rows and the last \code{ex[2]} columns are deleted. Then, the mean is taken over the remaining data points.
 }
 \examples{
 X <- genField(c(40, 80), H = 100, type = 2)

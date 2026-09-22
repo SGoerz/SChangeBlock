@@ -22,11 +22,11 @@ specific type of spatial MA(q) model.
 }
 \details{
 Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model) for 2-dim. random fields:
-\deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l}.}
-\eqn{(\theta_{kl}) = \Theta}. \cr \cr
-For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
-For "AR": \deqn{\theta_{kl} = \tilde{\theta}_{kl} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{kl}} 
-         \quad \text{ with } \quad \tilde{\theta}_{kl} = \code{param}^{\sqrt{k^2 + l^2}}.}
+\deqn{Y_{i,j} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{k,l} \varepsilon_{i+k, j+l}.}
+\eqn{(\theta_{k,l}) = \Theta}. \cr \cr
+For "MA": \deqn{\theta_{k,l} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
+For "AR": \deqn{\theta_{k,l} = \tilde{\theta}_{k,l} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{k,l}} 
+         \quad \text{ with } \quad \tilde{\theta}_{k,l} = \code{param}^{\sqrt{k^2 + l^2}}.}
 }
 \examples{
 genTheta(1, 0.2, "MA")

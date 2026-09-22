@@ -1,3 +1,43 @@
+## Generates a SAR field
+##
+## description 
+## Generates a spatial AR field with a specified dependency
+##
+## param X random errors from with the SAR field are simulated, INCLUDING THE BURN-IN PERIOD. Numeric matrix.
+## param n dimension of the SAR field to be generated PLUS the burn-in period. Numeric vector of length 2.
+## param burnIn how many observations per dimensions are being discarded as the burn-in period? Numeric vector of length 1 or 2.
+##
+## returns A numeric matrix of size \code{(n[1] - burnIn[1]) x (n[2] - burnIn[2])}
+genAR <- function(X, n = NULL, rho, burnIn = 20)
+{
+  if(!is.null(n))
+  {
+    X <- matrix(rnorm(prod(n + burnIn)), nrow = n[1] + burnIn[1])
+  } else
+  {
+    n <- dim(X)
+  }
+  
+  sapply(1:n[1], function(i)
+  {
+    sapply(1:n[2], function(j)
+    {
+      if(i > 1)
+      {
+        X[i, j] <<- X[i, j] + rho * X[i - 1, j]
+      }
+      if(j > 1)
+      {
+        X[i, j] <<- X[i, j] + rho * X[i, j - 1]
+      }
+    })
+  })
+  
+  return(X[-(1:20), -(1:20)])
+}
+
+
+
 #' Generate random fields
 #'
 #'@description
@@ -12,15 +52,25 @@
 #'            Has to be a 2-dim. matrix where there is an odd number of entries in both dimensions. 
 #'            Explanations are given in [genTheta].
 #' @param q dependency parameter for the model order of the MA field (integer > 0). 
-#' @param param dependency parameters for the model parameters of the MA field (numeric vector.) 
+#' @param param dependency parameters for the model parameters of the MA field (numeric vector). 
 #'              Both \code{q} and \code{param} are ignored if \code{Theta} is supplied.
 #'              A dependency matrix is generated using \code{\link{genTheta}}.
+#' @param SARparam dependency parameter for the model parameter of the AR field (numeric value). 
+#'                Is ignored of \code{Theta} is supplied. Explanation is given below. 
 #' @param ... additional arguments for the generation of \code{\link{changeRegion}}.
 #'
 #' @details
-#' Set \code{dim(X)} \eqn{= (n, m)} and \eqn{N = nm}. The dependent random field follows the equation:
-#' \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}}
-#' where \eqn{\mathbb{A} = \{(i, j) \in \{1, ..., n\} \times \{1, ..., m\} | \text{ change region at } (i, j)\}}.
+#' Set \code{dim(X)} \eqn{= (n, m)} and \eqn{N = nm}. Let \eqn{\mathbb{A} = \{(i, j) \in \{1, ..., n\} \times \{1, ..., m\} | \text{ change region at } (i, j)\}}.
+#' An independent random field is generated as
+#' \deqn{Y_{i,j} = \varepsilon_{i, j} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}},}
+#' where the \eqn{(e_{i,j})} are independent noise following the distribution \code{distr}.
+#' 
+#' The SMA random field follows the equation:
+#' \deqn{Y_{i,j} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}.}
+#' The SAR random field follows the equation:
+#' \deqn{Y_{i,j} = \rho(Y_{i-1, j} + Y_{i, j-1} ) + \varepsilon_{i, j} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}}
+#' where \eqn{\rho = } \code{SARparam} and the first 20 observations per dimension are being discarded as burn-in period.
+#' 
 #' Only for \code{type = 3L} the term \eqn{\mathbb{1}_{\{(i, j) \in \mathbb{A}\}}} is replaced by \eqn{\frac{H}{\sqrt{N}} \frac{j}{m - 1}}.
 #' 
 #'
@@ -35,7 +85,7 @@
 #'
 #' @export
 genField <- function(n, distr = rnorm, type = 0L, H = 100, 
-                     Theta = NULL, q = NULL, param = NULL, ...) 
+                     Theta = NULL, q = NULL, param = NULL, SARparam = NULL, ...) 
 {
   ## is there supposed to be dependency? If yes, the error matrix has to be
   ## larger than the requested field:
@@ -47,6 +97,9 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
   } else if(!is.null(q) && !is.null(param))
   {
     pn2 <- n + 2 * q
+  } else if(!is.null(SARparam))
+  {
+    pn2 <- n + 20
   } else
   {
     pn2 <- n
@@ -57,12 +110,16 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
   
   if(!is.null(Theta) || !(is.null(q) || is.null(param))) 
   {
+    if(!(is.null(q) || is.null(param))) Theta <- genTheta(q, param)
     # multiply error matrix X with dependency matrix Theta:
     X <- dependency(X, Theta, q, param)
-  } 
+  } else if(!is.null(SARparam))
+  {
+    X <- genAR(X, rho = SARparam)
+  }
   
   ## add change region:
-  if(type != 3L && type != 0L)
+  if(type != 3L && type != 9L && type != 0L)
   {
     alt <- numeric(prod(n))
     altIndex <- changeRegion(n, type = type, ...)
@@ -71,6 +128,9 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
   } else if(type == 3L)
   {
     X <- X + changeRegion(n, type = 3L) * H
+  } else if(type == 9L)
+  {
+    X <- X + changeRegion(n, type = 9L) * H
   }
   
   class(X) <- "RandomField"
@@ -166,8 +226,13 @@ changeRegion <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
                (n[2] * 9 * i + 1):(n[2] * 10 * i))
   } else if(type == 6L)
   {
+    # triangle shape
     upper <- min(n)
     index <- unlist(sapply(1:upper, function(i) ((i - 1) * n[1] + 1):((i - 1) * n[1] + i)))
+    if(n[1] < n[2])
+    {
+      index <- c(index, ((n[1] + 1) * upper - n[1] + 1):prod(n))
+    }
   } else if(type == 7L)
   {
     # "circle" including everything within distFun delta from middle
@@ -175,7 +240,7 @@ changeRegion <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
     if(missing(middle)) middle <- floor(n / 2)
     delta <- delta * distFun(rbind(c(1, 1), n))
     
-    index <- do.call(rbind, sapply(1:n[1], function(x) 
+    index <- do.call(rbind, lapply(1:n[1], function(x) 
     {
       res <- which(Vectorize(function(y) distFun(rbind(c(x, y), middle)))(1:n[2]) < delta)
       if(length(res) > 0) return(data.frame(x, res))
@@ -186,6 +251,15 @@ changeRegion <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
   {
     m <- floor(n[2] / 2)
     index <- (n[1] * m + 1):(n[1] * (m + 1))
+  } else if(type == 9)
+  {
+    # steady increase from bottom left to top right (in plot; in matrix from top to bottom)
+    return(matrix(rep(seq(0, (n[1] - 1) / (sum(n) - 2), 1 / (sum(n) - 2)), n[2]) + 
+                    rep(seq(0, (n[2] - 1) / (sum(n) - 2), 1 / (sum(n) - 2)), each = n[1]), ncol = n[2]))
+  } else if(type == 10)
+  {
+    # shift EVERYTHING
+    index <- 1:prod(n)
   }
 
   # alt[index] <- H / prod(n)^(0.43)

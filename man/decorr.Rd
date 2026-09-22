@@ -4,7 +4,15 @@
 \alias{decorr}
 \title{De-correlation}
 \usage{
-decorr(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
+decorr(
+  X,
+  lags,
+  method = 1L,
+  separable = FALSE,
+  M = 1,
+  type = 0,
+  withoutCentering = FALSE
+)
 }
 \arguments{
 \item{X}{Random Field, numeric matrix, or time series}

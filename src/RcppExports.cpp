@@ -22,15 +22,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // Mu
-NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group, Rcpp::Nullable<Rcpp::IntegerVector> l);
-RcppExport SEXP _SChangeBlock_Mu(SEXP xSEXP, SEXP groupSEXP, SEXP lSEXP) {
+NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group, Rcpp::Nullable<Rcpp::IntegerVector> l, LogicalVector includeEdge);
+RcppExport SEXP _SChangeBlock_Mu(SEXP xSEXP, SEXP groupSEXP, SEXP lSEXP, SEXP includeEdgeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< RObject >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::RObject> >::type group(groupSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type l(lSEXP);
-    rcpp_result_gen = Rcpp::wrap(Mu(x, group, l));
+    Rcpp::traits::input_parameter< LogicalVector >::type includeEdge(includeEdgeSEXP);
+    rcpp_result_gen = Rcpp::wrap(Mu(x, group, l, includeEdge));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -131,7 +132,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_SChangeBlock_GMD", (DL_FUNC) &_SChangeBlock_GMD, 1},
-    {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 3},
+    {"_SChangeBlock_Mu", (DL_FUNC) &_SChangeBlock_Mu, 4},
     {"_SChangeBlock_gamma", (DL_FUNC) &_SChangeBlock_gamma, 3},
     {"_SChangeBlock_gammaDiff", (DL_FUNC) &_SChangeBlock_gammaDiff, 3},
     {"_SChangeBlock_autocov", (DL_FUNC) &_SChangeBlock_autocov, 5},

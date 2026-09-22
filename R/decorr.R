@@ -137,7 +137,8 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #' @importFrom robcp modifChol
 #' @importFrom expm sqrtm
 #' @export
-decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
+decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0, 
+                   withoutCentering = FALSE)
 {
   # if(is.ts(X)) 
   # {
@@ -178,6 +179,8 @@ decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
   }
 
   y <- t(A.invsqrt) %*% (x - mean(x))
+  if(withoutCentering) y <- y  + mean(x)
+  
   if(ncol(X) > 1) Y <- matrix(y, ncol = ncol(X)) else Y <- as.vector(y)
   
   # if(!is.null(tspX)) 

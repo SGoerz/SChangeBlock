@@ -12,6 +12,7 @@ genField(
   Theta = NULL,
   q = NULL,
   param = NULL,
+  SARparam = NULL,
   ...
 )
 }
@@ -30,9 +31,12 @@ Explanations are given in \link{genTheta}.}
 
 \item{q}{dependency parameter for the model order of the MA field (integer > 0).}
 
-\item{param}{dependency parameters for the model parameters of the MA field (numeric vector.)
+\item{param}{dependency parameters for the model parameters of the MA field (numeric vector).
 Both \code{q} and \code{param} are ignored if \code{Theta} is supplied.
 A dependency matrix is generated using \code{\link{genTheta}}.}
+
+\item{SARparam}{dependency parameter for the model parameter of the AR field (numeric value).
+Is ignored of \code{Theta} is supplied. Explanation is given below.}
 
 \item{...}{additional arguments for the generation of \code{\link{changeRegion}}.}
 }
@@ -43,9 +47,17 @@ The function returns a matrix of dimension \code{n} that has the \code{\link{cla
 Generate random fields on a regular grid. Dependency can be modeled to some extend.
 }
 \details{
-Set \code{dim(X)} \eqn{= (n, m)} and \eqn{N = nm}. The dependent random field follows the equation:
-\deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}}
-where \eqn{\mathbb{A} = \{(i, j) \in \{1, ..., n\} \times \{1, ..., m\} | \text{ change region at } (i, j)\}}.
+Set \code{dim(X)} \eqn{= (n, m)} and \eqn{N = nm}. Let \eqn{\mathbb{A} = \{(i, j) \in \{1, ..., n\} \times \{1, ..., m\} | \text{ change region at } (i, j)\}}.
+An independent random field is generated as
+\deqn{Y_{i,j} = \varepsilon_{i, j} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}},}
+where the \eqn{(e_{i,j})} are independent noise following the distribution \code{distr}.
+
+The SMA random field follows the equation:
+\deqn{Y_{i,j} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}.}
+The SAR random field follows the equation:
+\deqn{Y_{i,j} = \rho(Y_{i-1, j} + Y_{i, j-1} ) + \varepsilon_{i, j} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}}
+where \eqn{\rho = } \code{SARparam} and the first 20 observations per dimension are being discarded as burn-in period.
+
 Only for \code{type = 3L} the term \eqn{\mathbb{1}_{\{(i, j) \in \mathbb{A}\}}} is replaced by \eqn{\frac{H}{\sqrt{N}} \frac{j}{m - 1}}.
 }
 \examples{
