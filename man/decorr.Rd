@@ -11,6 +11,7 @@ decorr(
   separable = FALSE,
   M = 1,
   type = 0,
+  unbiased = 0,
   withoutCentering = FALSE
 )
 }
@@ -31,6 +32,10 @@ those two autocovariances can be estimated separately and then combined (after s
 \item{M}{numeric vector containing two integer values, only needed for \code{type = 1}, see \code{\link[=autocov]{autocov()}}.}
 
 \item{type}{0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See \code{\link[=autocov]{autocov()}}.}
+
+\item{unbiased}{0: standard / biased autocovariance estimation, 1: unbiased autocovariance estimation, does not guarantee positive semi-definiteness. See \code{\link[=autocov]{autocov()}}.}
+
+\item{withoutCentering}{logical value. Should the data be centered? This option might make sense if you assume \eqn{x} to be centered. See Details.}
 }
 \value{
 De-correlated random field or time series; same data type and size as input \code{X}.
@@ -42,7 +47,9 @@ De-correlates a random field or time series, so that the resulting values can be
 The contents of \code{X} are ordered into a vector \eqn{x} column-wise. The autocovariance matrix \eqn{\Sigma} of \eqn{x} is estimated by \code{\link[=autocov]{autocov()}}.
 \eqn{\Sigma} is taken the square root of and being inverted using the functions specified in \code{method}. Then
 \deqn{y = \Sigma^{-\frac{1}{2}} (x - \bar{x}).}
-Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \eqn{X}.
+If \code{withoutCentering} is \code{TRUE}, then
+\deqn{y = \Sigma^{\frac{1}{2}} x}
+since we assume \eqn{x} to be centered. Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \eqn{X}.
 }
 \examples{
 x <- arima.sim(list(ar = 0.4), 200)

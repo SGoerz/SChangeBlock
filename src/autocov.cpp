@@ -15,7 +15,7 @@ double kFlatTop(double x)
 }
 
 // [[Rcpp::export]]
-double gamma(NumericMatrix X, int h1, int h2)
+double gamma(NumericMatrix X, int h1, int h2, int unbiased = 0)
 {
   int n = X.nrow();
   int m = X.ncol();
@@ -36,12 +36,13 @@ double gamma(NumericMatrix X, int h1, int h2)
       res += (X(i, j) * X(i + h1, j + h2));
     }
   }
-    
+  
+  if(unbiased == 1) return res / ((n - h1) * (m - h2));
   return res / (n * m);
 }
 
 // [[Rcpp::export]]
-double gammaDiff(NumericMatrix X, int h1, int h2)
+double gammaDiff(NumericMatrix X, int h1, int h2, int unbiased = 0)
 {
   int n = X.nrow();
   int m = X.ncol();
@@ -63,7 +64,8 @@ double gammaDiff(NumericMatrix X, int h1, int h2)
     }
   }
  
- return res / (2 * (n - h1) * (m - h2));
+  if(unbiased == 1) return res / ((n - h1) * (m - h2));
+  return res / (n * m);
 }
 
 
@@ -79,21 +81,34 @@ double gammaDiff(NumericMatrix X, int h1, int h2)
 //' @param M numeric vector containing two integer values, only needed for \code{type = 1}, see Details.
 //' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances.
 //' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See Details.
+//' @param unbiased 0: standard / biased estimator; 1: unbiased estimator, does not guarantee positive semi-definiteness. See details.
 //' 
 //' @returns A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}. 
 //'          If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
 //'          
 //' @details In this function, the autocovariance matrix of \code{X} is interpreted as the autocovariance matrix of 
 //'          \code{x = as.vector(X)}, i.e. where \code{X} is ordered into a vector column-wise. 
-//'          If \code{type = 0}, the autocovariance to lags \eqn{h_1, h_2} is estimated using the regular estimator
+//'          If \code{type = 0}, the autocovariance to lags \eqn{h_1, h_2} is estimated using the regular estimator \cr
+//'          Standard / biased: 
+//'          \deqn{\hat{\gamma}_{\text{reg}}(h_1, h_2) = 
+//'           \frac{1}{nm}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - \bar{Y})(Y_{i+h_1, j+h_2} - \bar{Y}).}
+//'          Unbiased:
 //'          \deqn{\hat{\gamma}_{\text{reg}}(h_1, h_2) = 
 //'           \frac{1}{(n-h_1)(m-h_2)}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - \bar{Y})(Y_{i+h_1, j+h_2} - \bar{Y}).}
 //'          If \code{type = 1}, the autocovariance to lags \eqn{h_1, h_2} is estimated by a difference-based version, inspired by 
-//'          the estimator of Tecuapetla-Gómez and Munk (2017) for time series:
-//'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff}}^2 -
+//'          the estimator of Tecuapetla-Gómez and Munk (2017) for time series: \cr
+//'          Standard / biased: 
+//'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff; standard}}^2 -
+//'           \frac{1}{2nm}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - Y_{i + h_1, j + h_2})^2}
+//'          Unbiased: 
+//'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff; unbiased}}^2 -
 //'           \frac{1}{2(n - h_1)(m - h_2)}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - Y_{i + h_1, j + h_2})^2}
 //'          with
-//'          \deqn{\hat{\sigma}_{\text{diff}}^2 = \frac{1}{4} \left(\frac{1}{n(m - M_2)}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
+//'          \deqn{\hat{\sigma}_{\text{diff; standard}}^2 = \frac{1}{4} \left(\frac{1}{nm}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
+//'          (Y_{i, j} - Y_{i, j+M_2})^2 + \frac{1}{nm}\sum_{i = 1}^{n-M_1} \sum_{j = 1}^{m} (Y_{i, j} - Y_{i+M_1, j})^2 \right),}
+//'          where \eqn{M_1 =} \code{M[1]}, \eqn{M_2 = } \code{M[2]}
+//'          resp. 
+//'          \deqn{\hat{\sigma}_{\text{diff; unbiased}}^2 = \frac{1}{4} \left(\frac{1}{n(m - M_2)}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
 //'          (Y_{i, j} - Y_{i, j+M_2})^2 + \frac{1}{(n - M_1)m}\sum_{i = 1}^{n-M_1} \sum_{j = 1}^{m} (Y_{i, j} - Y_{i+M_1, j})^2 \right),}
 //'          where \eqn{M_1 =} \code{M[1]}, \eqn{M_2 = } \code{M[2]}.
 //' 
@@ -111,10 +126,11 @@ double gammaDiff(NumericMatrix X, int h1, int h2)
 //' 
 //' @export
 // [[Rcpp::export]]
-NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = IntegerVector::create(1, 1), int direction = 0, int type = 0)
+NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = IntegerVector::create(1, 1), 
+                      int direction = 0, int type = 0, int unbiased = 0, int withoutCentering = 0)
 {
  NumericMatrix Y = clone(X);
- Y = X - mean(X);
+ if(withoutCentering == 0) Y = X - mean(X);
 
  int n = X.nrow();
  int m = X.ncol(); 
@@ -165,20 +181,20 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
  double var;
  if(type == 0) 
  {
-   var = gamma(Y, 0, 0);
+   var = gamma(Y, 0, 0, unbiased = unbiased);
  } else
  {
-   var = (gammaDiff(Y, M_n, 0) + gammaDiff(Y, 0, M_m)) / 2;
-   // var = gammaDiff(Y, M_n, M_m); 
+   var = (gammaDiff(Y, M_n, 0, unbiased = unbiased) + gammaDiff(Y, 0, M_m, unbiased = unbiased)) / 2;
+   // var = gammaDiff(Y, M_n, M_m, unbiased = unbiased); 
    // Rprintf("var = %f\n", var);
    // for(i = 0; i < M_n; i++)
    // {
-   //   var += gammaDiff(Y, i, M_m);
+   //   var += gammaDiff(Y, i, M_m, unbiased = unbiased);
    // }
    // Rprintf("var = %f\n", var);
    // for(j = 0; j < M_m; j++)
    // {
-   //   var += gammaDiff(Y, M_n, j);
+   //   var += gammaDiff(Y, M_n, j, unbiased = unbiased);
    // }
    // Rprintf("var = %f\n", var);
    // 
@@ -196,8 +212,8 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
    // x direction
    for(h1 = 1; h1 < b_n; h1++)
    {
-     if(type == 0) cov = gamma(Y, h1, 0);
-      else cov = (var - gammaDiff(Y, h1, 0));
+     if(type == 0) cov = gamma(Y, h1, 0, unbiased = unbiased);
+      else cov = (var - gammaDiff(Y, h1, 0, unbiased = unbiased));
      
      if(cov / var >= thresh) 
      {
@@ -215,8 +231,8 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
    // y direction
    for(h2 = 1; h2 < b_m; h2++)
    {
-     if(type == 0) cov = gamma(Y, 0, h2);
-      else cov = (var - gammaDiff(Y, 0, h2));
+     if(type == 0) cov = gamma(Y, 0, h2, unbiased = unbiased);
+      else cov = (var - gammaDiff(Y, 0, h2, unbiased = unbiased));
      
      if(cov / var >= thresh) 
      {
@@ -231,8 +247,8 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
      {
        if(h1 != 0)
        {
-         if(type == 0) cov = gamma(Y, h1, h2);
-          else cov = (var - gammaDiff(Y, h1, h2));
+         if(type == 0) cov = gamma(Y, h1, h2, unbiased = unbiased);
+          else cov = (var - gammaDiff(Y, h1, h2, unbiased = unbiased));
          
          if(cov / var >= thresh) 
          {

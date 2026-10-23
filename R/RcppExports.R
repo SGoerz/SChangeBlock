@@ -42,12 +42,12 @@ Mu <- function(x, group = NULL, l = NULL, includeEdge = FALSE) {
     .Call('_SChangeBlock_Mu', PACKAGE = 'SChangeBlock', x, group, l, includeEdge)
 }
 
-gamma <- function(X, h1, h2) {
-    .Call('_SChangeBlock_gamma', PACKAGE = 'SChangeBlock', X, h1, h2)
+gamma <- function(X, h1, h2, unbiased = 0L) {
+    .Call('_SChangeBlock_gamma', PACKAGE = 'SChangeBlock', X, h1, h2, unbiased)
 }
 
-gammaDiff <- function(X, h1, h2) {
-    .Call('_SChangeBlock_gammaDiff', PACKAGE = 'SChangeBlock', X, h1, h2)
+gammaDiff <- function(X, h1, h2, unbiased = 0L) {
+    .Call('_SChangeBlock_gammaDiff', PACKAGE = 'SChangeBlock', X, h1, h2, unbiased)
 }
 
 #' Autocovariance matrix
@@ -62,21 +62,34 @@ gammaDiff <- function(X, h1, h2) {
 #' @param M numeric vector containing two integer values, only needed for \code{type = 1}, see Details.
 #' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances.
 #' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See Details.
+#' @param unbiased 0: standard / biased estimator; 1: unbiased estimator, does not guarantee positive semi-definiteness. See details.
 #' 
 #' @returns A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}. 
 #'          If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
 #'          
 #' @details In this function, the autocovariance matrix of \code{X} is interpreted as the autocovariance matrix of 
 #'          \code{x = as.vector(X)}, i.e. where \code{X} is ordered into a vector column-wise. 
-#'          If \code{type = 0}, the autocovariance to lags \eqn{h_1, h_2} is estimated using the regular estimator
+#'          If \code{type = 0}, the autocovariance to lags \eqn{h_1, h_2} is estimated using the regular estimator \cr
+#'          Standard / biased: 
+#'          \deqn{\hat{\gamma}_{\text{reg}}(h_1, h_2) = 
+#'           \frac{1}{nm}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - \bar{Y})(Y_{i+h_1, j+h_2} - \bar{Y}).}
+#'          Unbiased:
 #'          \deqn{\hat{\gamma}_{\text{reg}}(h_1, h_2) = 
 #'           \frac{1}{(n-h_1)(m-h_2)}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - \bar{Y})(Y_{i+h_1, j+h_2} - \bar{Y}).}
 #'          If \code{type = 1}, the autocovariance to lags \eqn{h_1, h_2} is estimated by a difference-based version, inspired by 
-#'          the estimator of Tecuapetla-Gómez and Munk (2017) for time series:
-#'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff}}^2 -
+#'          the estimator of Tecuapetla-Gómez and Munk (2017) for time series: \cr
+#'          Standard / biased: 
+#'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff; standard}}^2 -
+#'           \frac{1}{2nm}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - Y_{i + h_1, j + h_2})^2}
+#'          Unbiased: 
+#'          \deqn{\hat{\gamma}_{\text{diff}}(h_1, h_2) = \hat{\sigma}_{\text{diff; unbiased}}^2 -
 #'           \frac{1}{2(n - h_1)(m - h_2)}\sum_{i = 1}^{n-h_1} \sum_{j = 1}^{m-h_2} (Y_{i, j} - Y_{i + h_1, j + h_2})^2}
 #'          with
-#'          \deqn{\hat{\sigma}_{\text{diff}}^2 = \frac{1}{4} \left(\frac{1}{n(m - M_2)}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
+#'          \deqn{\hat{\sigma}_{\text{diff; standard}}^2 = \frac{1}{4} \left(\frac{1}{nm}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
+#'          (Y_{i, j} - Y_{i, j+M_2})^2 + \frac{1}{nm}\sum_{i = 1}^{n-M_1} \sum_{j = 1}^{m} (Y_{i, j} - Y_{i+M_1, j})^2 \right),}
+#'          where \eqn{M_1 =} \code{M[1]}, \eqn{M_2 = } \code{M[2]}
+#'          resp. 
+#'          \deqn{\hat{\sigma}_{\text{diff; unbiased}}^2 = \frac{1}{4} \left(\frac{1}{n(m - M_2)}\sum_{i = 1}^n \sum_{j = 1}^{m - M_2} 
 #'          (Y_{i, j} - Y_{i, j+M_2})^2 + \frac{1}{(n - M_1)m}\sum_{i = 1}^{n-M_1} \sum_{j = 1}^{m} (Y_{i, j} - Y_{i+M_1, j})^2 \right),}
 #'          where \eqn{M_1 =} \code{M[1]}, \eqn{M_2 = } \code{M[2]}.
 #' 
@@ -93,8 +106,8 @@ gammaDiff <- function(X, h1, h2) {
 #' Tecuapetla‐Gómez, I., & Munk, A. (2017). Autocovariance estimation in regression with a discontinuous signal and m‐dependent errors: A difference‐based approach. Scandinavian Journal of Statistics, 44(2), 346-368.
 #' 
 #' @export
-autocov <- function(X, b, M = as.integer( c(1, 1)), direction = 0L, type = 0L) {
-    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, M, direction, type)
+autocov <- function(X, b, M = as.integer( c(1, 1)), direction = 0L, type = 0L, unbiased = 0L, withoutCentering = 0L) {
+    .Call('_SChangeBlock_autocov', PACKAGE = 'SChangeBlock', X, b, M, direction, type, unbiased, withoutCentering)
 }
 
 #' Dependency Matrix Theta

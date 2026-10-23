@@ -96,6 +96,7 @@ block_stat <- function(x, s, fun = "gmd", varEstim = var)
     res <- (1 / sigma_x * (sum(nu) - prod(n) * mean(m)^2) - bn + 1) / sqrt(kappa * bn)
   } else if(fun == "varWithoutCentering")
   {
+    sigma_x <- sum(as.vector(x)^2) / (prod(n) - 1)
     if(length(ln) == length(m)) nu <- ln * m^2 else nu <- prod(ln) * m^2
     res <- (sum(nu) - bn * sigma_x) / (sigma_x * sqrt(2 * bn))
   } else if(fun == "jb")

@@ -104,12 +104,15 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #'                  those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.
 #' @param M numeric vector containing two integer values, only needed for \code{type = 1}, see [autocov()].
 #' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See [autocov()].
-#'                  
+#' @param unbiased 0: standard / biased autocovariance estimation, 1: unbiased autocovariance estimation, does not guarantee positive semi-definiteness. See [autocov()].
+#' @param withoutCentering logical value. Should the data be centered? This option might make sense if you assume \eqn{x} to be centered. See Details.        
 #' @details
 #' The contents of \code{X} are ordered into a vector \eqn{x} column-wise. The autocovariance matrix \eqn{\Sigma} of \eqn{x} is estimated by [autocov()]. 
 #' \eqn{\Sigma} is taken the square root of and being inverted using the functions specified in \code{method}. Then
 #' \deqn{y = \Sigma^{-\frac{1}{2}} (x - \bar{x}).}
-#' Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \eqn{X}.
+#' If \code{withoutCentering} is \code{TRUE}, then 
+#' \deqn{y = \Sigma^{\frac{1}{2}} x}
+#' since we assume \eqn{x} to be centered. Then \eqn{y} is ordered back into a matrix \eqn{Y} with the same dimension as \eqn{X}.
 #' 
 #'                  
 #' @returns De-correlated random field or time series; same data type and size as input \code{X}.
@@ -137,7 +140,7 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #' @importFrom robcp modifChol
 #' @importFrom expm sqrtm
 #' @export
-decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0, 
+decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0, unbiased = 0,
                    withoutCentering = FALSE)
 {
   # if(is.ts(X)) 
@@ -168,18 +171,20 @@ decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0,
 
   if(separable)
   {
-    A1 <- autocov(X, c(1, lags[2]), direction = 1, M = M, type = type)
-    A2 <- autocov(X, c(lags[1], 1), direction = 2, M = M, type = type)
+    A1 <- autocov(X, c(1, lags[2]), direction = 1, M = M, type = type, unbiased = unbiased, 
+                  withoutCentering = as.integer(withoutCentering))
+    A2 <- autocov(X, c(lags[1], 1), direction = 2, M = M, type = type, unbiased = unbiased, 
+                  withoutCentering = as.integer(withoutCentering))
     
     A.invsqrt <- kronecker(invsqrt(A1, method), invsqrt(A2, method))
   } else 
   {
-    A <- autocov(X, lags, M = M, type = type)
+    A <- autocov(X, lags, M = M, type = type, unbiased = unbiased, 
+                 withoutCentering = as.integer(withoutCentering))
     A.invsqrt <- invsqrt(A, method)
   }
 
-  y <- t(A.invsqrt) %*% (x - mean(x))
-  if(withoutCentering) y <- y  + mean(x)
+  if(withoutCentering) y <- t(A.invsqrt) %*% x else y <- t(A.invsqrt) %*% (x - mean(x))
   
   if(ncol(X) > 1) Y <- matrix(y, ncol = ncol(X)) else Y <- as.vector(y)
   
