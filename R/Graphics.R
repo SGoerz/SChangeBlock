@@ -5,6 +5,7 @@
 #' @param colors vector of colors over which a gradient is created.
 #' @param name title of the legend, character string.
 #' @param alpha opacity of the raster tiles. Numeric value between 0 and 1.
+#' @param facet_id optional factors to divide plots into facets. Has to be a factor vector of length \code{prod(dim(x))} resp. \code{length(x)}.
 #' @param p additional ggplot2 component added BEFORE this function's components.
 #' @param ... other parameters to be passed through to plotting functions.
 #' 
@@ -15,8 +16,9 @@
 #' @return a ggplot2 object. Function is mostly called for its side effect.
 #'
 #' @exportS3Method
-#' @importFrom ggplot2 ggplot aes geom_tile scale_fill_gradientn ggtitle geom_raster guides guide_colorbar
-plot.RandomField <- function(x, main = "", colors, name = "value", alpha = 1, p = NULL, ...)
+#' @importFrom ggplot2 ggplot aes geom_tile scale_fill_gradientn ggtitle geom_raster guides guide_colorbar facet_wrap
+plot.RandomField <- function(x, main = "", colors, name = "value", alpha = 1, facet_id = NULL,
+                             p = NULL, ...)
 {
   n <- dim(x)
   
@@ -41,12 +43,17 @@ plot.RandomField <- function(x, main = "", colors, name = "value", alpha = 1, p 
   ###
 
   data <- cbind(expand.grid(y = yvar, x = xvar), z = as.vector(x))
+  
+  if(!is.null(facet_id)) data <- cbind(data, id = facet_id)
+  
   p <- ggplot(data, aes(x = x, y = y, fill = z)) +
     p +
     geom_raster(alpha = alpha) +
     scale_fill_gradientn(colors = colors, name = name, ...) +
     ggtitle(main) +
     guides(fill = guide_colorbar(order = 1))
+  
+  if(!is.null(facet_id)) p <- p + facet_wrap(~ id)
 
   return(p)
 }

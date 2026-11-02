@@ -4,7 +4,16 @@
 \alias{plot.RandomField}
 \title{Plot random field}
 \usage{
-\method{plot}{RandomField}(x, main = "", colors, name = "value", alpha = 1, p = NULL, ...)
+\method{plot}{RandomField}(
+  x,
+  main = "",
+  colors,
+  name = "value",
+  alpha = 1,
+  facet_id = NULL,
+  p = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{RandomField} object.}
@@ -16,6 +25,8 @@
 \item{name}{title of the legend, character string.}
 
 \item{alpha}{opacity of the raster tiles. Numeric value between 0 and 1.}
+
+\item{facet_id}{optional factors to divide plots into facets. Has to be a factor vector of length \code{prod(dim(x))} resp. \code{length(x)}.}
 
 \item{p}{additional ggplot2 component added BEFORE this function's components.}
 
