@@ -28,6 +28,9 @@ Bandwidths must be smaller than the dimensions of X.}
 \item{type}{0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See Details.}
 
 \item{unbiased}{0: standard / biased estimator; 1: unbiased estimator, does not guarantee positive semi-definiteness. See details.}
+
+\item{withoutCentering}{0: data is centered before computing (co-)variances; 1: data is not centered.
+This option might make sense if you assume \eqn{x} to be centered.}
 }
 \value{
 A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}.

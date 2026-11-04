@@ -82,6 +82,8 @@ double gammaDiff(NumericMatrix X, int h1, int h2, int unbiased = 0)
 //' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances.
 //' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See Details.
 //' @param unbiased 0: standard / biased estimator; 1: unbiased estimator, does not guarantee positive semi-definiteness. See details.
+//' @param withoutCentering 0: data is centered before computing (co-)variances; 1: data is not centered. 
+//'        This option might make sense if you assume \eqn{x} to be centered.
 //' 
 //' @returns A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}. 
 //'          If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
@@ -181,10 +183,10 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
  double var;
  if(type == 0) 
  {
-   var = gamma(Y, 0, 0, unbiased = unbiased);
+   var = gamma(Y, 0, 0, unbiased);
  } else
  {
-   var = (gammaDiff(Y, M_n, 0, unbiased = unbiased) + gammaDiff(Y, 0, M_m, unbiased = unbiased)) / 2;
+   var = (gammaDiff(Y, M_n, 0, unbiased) + gammaDiff(Y, 0, M_m, unbiased)) / 2;
    // var = gammaDiff(Y, M_n, M_m, unbiased = unbiased); 
    // Rprintf("var = %f\n", var);
    // for(i = 0; i < M_n; i++)
@@ -212,8 +214,8 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
    // x direction
    for(h1 = 1; h1 < b_n; h1++)
    {
-     if(type == 0) cov = gamma(Y, h1, 0, unbiased = unbiased);
-      else cov = (var - gammaDiff(Y, h1, 0, unbiased = unbiased));
+     if(type == 0) cov = gamma(Y, h1, 0, unbiased);
+      else cov = (var - gammaDiff(Y, h1, 0, unbiased));
      
      if(cov / var >= thresh) 
      {
@@ -231,8 +233,8 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
    // y direction
    for(h2 = 1; h2 < b_m; h2++)
    {
-     if(type == 0) cov = gamma(Y, 0, h2, unbiased = unbiased);
-      else cov = (var - gammaDiff(Y, 0, h2, unbiased = unbiased));
+     if(type == 0) cov = gamma(Y, 0, h2, unbiased);
+      else cov = (var - gammaDiff(Y, 0, h2, unbiased));
      
      if(cov / var >= thresh) 
      {
@@ -247,8 +249,8 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
      {
        if(h1 != 0)
        {
-         if(type == 0) cov = gamma(Y, h1, h2, unbiased = unbiased);
-          else cov = (var - gammaDiff(Y, h1, h2, unbiased = unbiased));
+         if(type == 0) cov = gamma(Y, h1, h2, unbiased);
+          else cov = (var - gammaDiff(Y, h1, h2, unbiased));
          
          if(cov / var >= thresh) 
          {

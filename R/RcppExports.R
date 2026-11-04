@@ -63,6 +63,8 @@ gammaDiff <- function(X, h1, h2, unbiased = 0L) {
 #' @param direction 0: all directions, 1: only row-wise autocovariances, 2: only column-wise autocovariances.
 #' @param type 0: ordinary autocovariance estimation, 1: difference-based autocovariance estimation. See Details.
 #' @param unbiased 0: standard / biased estimator; 1: unbiased estimator, does not guarantee positive semi-definiteness. See details.
+#' @param withoutCentering 0: data is centered before computing (co-)variances; 1: data is not centered. 
+#'        This option might make sense if you assume \eqn{x} to be centered.
 #' 
 #' @returns A numeric matrix of size \eqn{N \times N}. If \code{direction = 0} then \eqn{N =} \code{prod(dim(X))}. 
 #'          If \code{direction = 1} then \eqn{N =} \code{ncol(X)}, if \code{direction = 2} then \eqn{N =} \code{nrow(X)}.
