@@ -56,5 +56,7 @@ cutoff <- function(X, ln, ex = c(1, 1))
   }
   
   class(Y) <- classX
+  if(classX == "ts") Y <- ts(Y, start = start(X), frequency = frequency(X) / ln)
+  
   return(Y)
 }
