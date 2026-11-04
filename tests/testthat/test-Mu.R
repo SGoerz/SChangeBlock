@@ -1,4 +1,4 @@
-test_that("outout from Mu has the correct format", {
+test_that("output from Mu has the correct format", {
   X <- matrix(rnorm(36), ncol = 6)
   
   expect_equal(length(Mu(X, l = c(2, 2))), 9)
@@ -15,6 +15,7 @@ test_that("Mu computes the correct block sums", {
   set.seed(1045)
   x <- rnorm(100)
   expect_equal(Mu(x, l = 50), c(mean(x[1:50]), mean(x[51:100])))
+  expect_equal(Mu(x, group = c(rep(1, 10), rep(2, 90))), c(mean(x[1:10]), mean(x[11:100])))
   
   # matrix:
   set.seed(1045)
@@ -60,4 +61,6 @@ test_that("Mu computes the correct block sums", {
   expect_error(Mu(1:3, group = 1))
   expect_error(Mu(rnorm(10), l = 0))
   expect_error(Mu(X, l = c(3, 0)))
+  expect_error(Mu(c(TRUE, FALSE), l = 1))
+  expect_error(Mu(1:2))
 })
