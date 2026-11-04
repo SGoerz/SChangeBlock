@@ -20,5 +20,16 @@ observation in a vector or matrix of the same dimension belongs to.
 }
 \details{
 This function is especially useful if you cannot have equally sized blocks
-for performing the \code{block_test}.
+for performing the \code{block_test}. First it divides the observations in \code{bn}
+equally sized blocks. Then it calculates the number of remaining observations
+\eqn{b_n^{rest} = n - b_n \cdot \lfloor n / b_n \rfloor} and distributes them evenly
+among the first \eqn{b_n^{rest}} blocks.
+}
+\examples{
+X <- genField(c(11, 14))
+group <- build_blocks(dim(X), c(2, 3))
+group
+
+Mu(X, group = group)
+
 }

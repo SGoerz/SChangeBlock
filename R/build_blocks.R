@@ -8,24 +8,38 @@
 #' 
 #' @details
 #' This function is especially useful if you cannot have equally sized blocks 
-#' for performing the \code{block_test}. 
+#' for performing the \code{block_test}. First it divides the observations in \code{bn}
+#' equally sized blocks. Then it calculates the number of remaining observations
+#' \eqn{b_n^{rest} = n - b_n \cdot \lfloor n / b_n \rfloor} and distributes them evenly 
+#' among the first \eqn{b_n^{rest}} blocks. 
 #' 
 #' @returns Strictly positive integer vector or matrix having the dimensions \code{n}. 
+#' 
+#' @examples
+#' X <- genField(c(11, 14))
+#' group <- build_blocks(dim(X), c(2, 3))
+#' group
+#' 
+#' Mu(X, group = group)
 #' 
 #' @export
 build_blocks <- function(n, bn)
 {
+  if(length(n) == 1) n[2] <- 1
+  if(length(bn) == 1) bn[2] <- 1
+  
   ln <- floor(n / bn)
+
   bndiff <- n - ln * bn
   
   nblocks <- prod(bn)
   groups <- matrix(1:nblocks, nrow = bn[1])
   
-  A <- kronecker(groups[0:bndiff[1], 0:bndiff[2]],
+  A <- kronecker(groups[0:bndiff[1], 0:bndiff[2], drop = FALSE],
                  matrix(1, nrow = ln[1] + 1, ncol = ln[2] + 1))
   B <- kronecker(matrix(groups[0:bndiff[1], (bndiff[2] + 1):bn[2]], nrow = bndiff[1]),
                  matrix(1, nrow = ln[1] + 1, ncol = ln[2]))
-  C <- kronecker(matrix(groups[(bndiff[1] + 1):bn[1], 0:bndiff[2]], nrow = bn[1] - bndiff[1]),
+  C <- kronecker(groups[(bndiff[1] + 1):bn[1], 0:bndiff[2], drop = FALSE],
                  matrix(1, nrow = ln[1], ncol = ln[2] + 1))
   D <- kronecker(matrix(groups[(bndiff[1] + 1):bn[1], (bndiff[2] + 1):bn[2]], nrow = bn[1] - bndiff[1]),
                  matrix(1, nrow = ln[1], ncol = ln[2]))
