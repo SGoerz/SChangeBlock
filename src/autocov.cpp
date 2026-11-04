@@ -8,11 +8,11 @@ using namespace Rcpp;
 //   return 0;
 // }
 
-double kFlatTop(double x)
-{
-  if(fabs(x) <= 0.5) return 1; else if(fabs(x) <= 1) return 2 - 2 * fabs(x);
-  return 0;
-}
+// double kFlatTop(double x)
+// {
+//   if(fabs(x) <= 0.5) return 1; else if(fabs(x) <= 1) return 2 - 2 * fabs(x);
+//   return 0;
+// }
 
 // [[Rcpp::export]]
 double gamma(NumericMatrix X, int h1, int h2, int unbiased = 0)
@@ -270,30 +270,6 @@ NumericMatrix autocov(NumericMatrix X, NumericVector b, IntegerVector M = Intege
  
  return A;
 }
-
-// double gammaWrapper(NumericMatrix X, int h1, int h2, NumericVector s)
-// {
-//   int n = X.nrow();
-//   int m = X.ncol();
-//   int i, j;
-//   int index = 0; 
-//   
-//   int bn = round(pow(n, s[0]));
-//   int bm = round(pow(m, s[1]));
-//   
-//   NumericVector Res( floor(n / bn) * floor(m / bm) );
-//   
-//   for(i = 0; i < n - bn + 1; i = i + bn)
-//   {
-//     for(j = 0; j < m - bm + 1; j = j + bm)
-//     {
-//       Res[index] = gamma(X(Range(i, i + bn - 1), Range(j, j + bm - 1)), h1, h2);
-//       index++;
-//     }
-//   }
-//   
-//   return median(Res);
-// }
 
 // //' Long run variance
 // //' 

@@ -33,6 +33,7 @@ test_that("cutoff produces correct output", {
   
   # time series
   ## check if arima parameter is significant (to 10% level)
+  set.seed(1)
   x <- arima.sim(model = list(ar = 0.5), 100)
   y <- cutoff(x, 3, 1)
   
