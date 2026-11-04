@@ -3,7 +3,11 @@
 #' Find the blocks that contribute (most) to a high test statistic
 #' 
 #' @param x times series or random field to be investigated Either a numeric vector or a numeric matrix.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.
+#' @param s parameter for the size of the blocks. 
+#'          Either a single value 0 < s < 1 for determining the block length \eqn{l_n = [n^s]}, 
+#'          or a vector with one entry per dimension between 0 and 1, 
+#'          or a strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X. 
+#'          Default is \code{\link{sOpt}}\code{(n, 0.6)}.
 #' @param fun Character string; one of "gmd" (default), "var", "varWithoutCentering".
 #' @param u quantile at which blocks are marked significant.
 #' 
@@ -24,6 +28,7 @@ find_blocks <- function(x, s, fun = "gmd", u = 0.95)
   
   if(length(s) == 1 || length(s) == length(n))
   {
+    if(any(s <= 0 | s >= 1)) stop("If s is meant as an exponent, it must be between 0 and 1.")
     ln <- round(n^s)
     lprod <- prod(ln)
     bn <- floor(n / ln)

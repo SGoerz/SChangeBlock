@@ -60,8 +60,8 @@ DataFrame sSizes(int n, double lower = 0.5, double upper = 1, double step = 0.1)
 //' 
 //' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
 //' 
-//' @param n Sample size(s), numeric (vector).
-//' @param s Desired exponent, \eqn{0.5 \leq s \leq 1}.
+//' @param n sample size(s), integer (vector).
+//' @param s desired exponent, \eqn{0.5 \leq s \leq 1}.
 //' 
 //' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
 //' 

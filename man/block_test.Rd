@@ -9,7 +9,7 @@ block_test(x, s, fun = "gmd", varEstim = var)
 \arguments{
 \item{x}{times series or random field to be tested. Either a numeric vector or a numeric matrix.}
 
-\item{s}{parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
+\item{s}{parameter for the size of the blocks, 0 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
 
 \item{fun}{Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA", "ad", "sw" (see \code{\link{block_stat}} for details).}
 
@@ -49,7 +49,7 @@ block_stat(X, 0.6, fun = "var", varEstim = mad)
 \references{
 \enc{Görz}{Goerz}, S. and Fried, R. (2025). "Detecting changes in the mean of spatial random fields on a regular grid", \emph{arXiv preprint} \href{https://arxiv.org/abs/2512.11599}{arXiv:2512.11599}
 
-Schmidt, S. K. (2024). Detecting changes in the trend function of heteroscedastic time series. Bernoulli, 30(4), 2598-2622.
+Schmidt, S. K. (2024). "Detecting changes in the trend function of heteroscedastic time series", Bernoulli, 30(4), 2598-2622.
 }
 \seealso{
 \link{block_stat}, \link{block_pValue}

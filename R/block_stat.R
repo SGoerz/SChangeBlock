@@ -3,7 +3,11 @@
 #' Computes test statistics of the block test on structural changes.
 #'
 #' @param x times series or random field to be tested. Either a numeric vector or a numeric matrix.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}. Default is \code{\link{sOpt}}\code{(n, 0.6)}.
+#' @param s parameter for the size of the blocks. 
+#'          Either a single value 0 < s < 1 for determining the block length \eqn{l_n = [n^s]}, 
+#'          or a vector with one entry per dimension between 0 and 1, 
+#'          or a strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X. 
+#'          Default is \code{\link{sOpt}}\code{(n, 0.6)}.
 #' @param fun Character string; one of "gmd" (default), "var", "jb", "grubbs", "ANOVA".
 #' @param varEstim variance estimator or variance estimation of the whole field or times series.
 #'                 Either a function to estimate the variance with, or a numeric value.
@@ -23,6 +27,9 @@
 #' For \code{fun} = \code{"ANOVA"} it has the attributes \code{k} (number of blocks) and
 #' \code{N} (total number of observations).
 #' 
+#' @references \enc{Görz}{Goerz}, S. and Fried, R. (2025). "Detecting changes in the mean of spatial random fields on a regular grid", \emph{arXiv preprint} \href{https://arxiv.org/abs/2512.11599}{arXiv:2512.11599}
+#' @references Schmidt, S. K. (2024). "Detecting changes in the trend function of heteroscedastic time series", Bernoulli, 30(4), 2598-2622.
+#'  
 #' @seealso [block_pValue]
 #' 
 #' @examples
@@ -52,6 +59,7 @@ block_stat <- function(x, s, fun = "gmd", varEstim = var)
 
   if(length(s) == 1 || length(s) == length(n))
   {
+    if(any(s <= 0 | s >= 1)) stop("If s is meant as an exponent, it must be between 0 and 1.")
     # CAREFUL: bn is the product of all dimensions, but ln is still a vector since
     # it is needed for the ANOVA
     ln <- round(n^s)

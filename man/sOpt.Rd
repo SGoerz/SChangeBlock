@@ -10,13 +10,13 @@ sSizes(n, lower = 0.5, upper = 1, step = 0.1)
 sOpt(n, s = 0.6)
 }
 \arguments{
-\item{n}{Sample size(s), numeric (vector).}
+\item{n}{sample size(s), integer (vector).}
 
 \item{lower, upper}{lower and upper search border, between 0 and 1.}
 
 \item{step}{size of the step for the search, between 0 and 1.}
 
-\item{s}{Desired exponent, \eqn{0.5 \leq s \leq 1}.}
+\item{s}{desired exponent, \eqn{0.5 \leq s \leq 1}.}
 }
 \value{
 \code{sSizes} returns a data frame containing
