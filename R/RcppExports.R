@@ -167,21 +167,7 @@ sSizes <- function(n, lower = 0.5, upper = 1, step = 0.1) {
     .Call('_SChangeBlock_sSizes', PACKAGE = 'SChangeBlock', n, lower, upper, step)
 }
 
-#' Optimal parameter s
-#' 
-#' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
-#' 
-#' @param n sample size(s), integer (vector).
-#' @param s desired exponent, \eqn{0.5 \leq s \leq 1}.
-#' 
-#' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
-#' 
-#' @examples 
-#' sOpt(50, 0.6)
-#' sOpt(100, 0.6)
-#' 
-#' @export
-sOpt <- function(n, s = 0.6) {
-    .Call('_SChangeBlock_sOpt', PACKAGE = 'SChangeBlock', n, s)
+sOpt_c <- function(n, s = 0.6, step = 0.001) {
+    .Call('_SChangeBlock_sOpt_c', PACKAGE = 'SChangeBlock', n, s, step)
 }
 

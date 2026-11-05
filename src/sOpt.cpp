@@ -56,22 +56,18 @@ DataFrame sSizes(int n, double lower = 0.5, double upper = 1, double step = 0.1)
    return df;
 }
 
-//' Optimal parameter s
-//' 
-//' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
-//' 
-//' @param n sample size(s), integer (vector).
-//' @param s desired exponent, \eqn{0.5 \leq s \leq 1}.
-//' 
-//' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
-//' 
-//' @examples 
-//' sOpt(50, 0.6)
-//' sOpt(100, 0.6)
-//' 
-//' @export
+// Optimal parameter s
+// 
+// Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
+// 
+// @param n sample size(s), integer (vector).
+// @param s desired exponent, \eqn{0.5 \leq s \leq 1}.
+// @param step size of the step for the search, between 0 and 1.
+// 
+// @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
+// 
 // [[Rcpp::export]]
-NumericVector sOpt(IntegerVector n, double s = 0.6)
+NumericVector sOpt_c(IntegerVector n, double s = 0.6, double step = 0.001)
 {
    int N = n.length();
    NumericVector out(N);
@@ -83,7 +79,7 @@ NumericVector sOpt(IntegerVector n, double s = 0.6)
    
    for(int i = 0; i < N; i++)
    {
-     df = sSizes(n(i), 0.5, 1, 0.001);
+     df = sSizes(n(i), 0.5, 1, step);
      exp = df["s"];
      diff = df["diff"];
      Ndiff = diff.length();

@@ -52,12 +52,30 @@ build_blocks <- function(n, bn)
   rbind(cbind(A, B), cbind(C, D))
 }
 
-sOpt2 <- function(n, s = 0.6)
+#' Optimal parameter s
+#' 
+#' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
+#' 
+#' @param n sample size(s), integer (vector).
+#' @param s desired exponent, \eqn{0.5 \leq s \leq 1}.
+#' @param deviation factor of how much \eqn{n} can deviate from 0. Numeric value.
+#' @param step size of the step for the search, between 0 and 1.
+#' 
+#' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
+#' 
+#' @examples 
+#' sOpt(50, 0.6)
+#' sOpt(100, 0.6)
+#' 
+#' @export
+sOpt <- function(n, s = 0.6, deviation = 0, step = 0.001)
 {
+  if(deviation == 0) return(sOpt_c(n, s, step))
+  
   sapply(n, function(n)
   {
     res <- sSizes(n, step = 0.01)
     # res$bn[which.min(abs(res$s[res$diff < 2] - s))]
-    res$bn[which.min(abs(res$s - 0.6) + 0.05 * res$diff)]
+    res$s[which.min(abs(res$s - 0.6) + deviation * res$diff)]
   })
 }

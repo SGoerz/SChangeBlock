@@ -121,15 +121,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// sOpt
-NumericVector sOpt(IntegerVector n, double s);
-RcppExport SEXP _SChangeBlock_sOpt(SEXP nSEXP, SEXP sSEXP) {
+// sOpt_c
+NumericVector sOpt_c(IntegerVector n, double s, double step);
+RcppExport SEXP _SChangeBlock_sOpt_c(SEXP nSEXP, SEXP sSEXP, SEXP stepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type s(sSEXP);
-    rcpp_result_gen = Rcpp::wrap(sOpt(n, s));
+    Rcpp::traits::input_parameter< double >::type step(stepSEXP);
+    rcpp_result_gen = Rcpp::wrap(sOpt_c(n, s, step));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -143,7 +144,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_SChangeBlock_genTheta", (DL_FUNC) &_SChangeBlock_genTheta, 3},
     {"_SChangeBlock_dependency", (DL_FUNC) &_SChangeBlock_dependency, 4},
     {"_SChangeBlock_sSizes", (DL_FUNC) &_SChangeBlock_sSizes, 4},
-    {"_SChangeBlock_sOpt", (DL_FUNC) &_SChangeBlock_sOpt, 2},
+    {"_SChangeBlock_sOpt_c", (DL_FUNC) &_SChangeBlock_sOpt_c, 3},
     {NULL, NULL, 0}
 };
 
