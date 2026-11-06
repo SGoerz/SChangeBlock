@@ -8,6 +8,8 @@ test_that("find_blocks output has the correct format", {
   y <- find_blocks(x, 0.646)
   
   expect_equal(attributes(x), attributes(y))
+  
+  expect_error(find_blocks(X, s = 2))
 })
 
 test_that("find_blocks produces the correct output", {
@@ -28,7 +30,8 @@ test_that("find_blocks produces the correct output", {
   expect_equal(S, Y)
   
   # var without centering
-  Y <- find_blocks(X, 0.6, fun = "varWithoutCentering", u = 0.9)
+  s <- build_blocks(n, s = 0.6)
+  Y <- find_blocks(X, s, fun = "varWithoutCentering", u = 0.9)
   
   sigma <- sum(X^2) / (prod(n) - 1)
   S <- (prod(ln) * mu^2 / sigma - 1) / sqrt(2) > qnorm(0.9)
@@ -37,11 +40,32 @@ test_that("find_blocks produces the correct output", {
   
   expect_equal(S, Y)
   
-  # gmd
+   # gmd
   set.seed(110)
-  Y <- find_blocks(X, 0.6, fun = "gmd", u = 0.95)
+  Y <- find_blocks(X, fun = "gmd", u = 0.95)
   
   set.seed(110)
-  muDist <- dist(mu)
+  S <- as.matrix(dist(mu) * sqrt(prod(ln)) / var(as.vector(X)) - 2 / sqrt(pi))
+  S <- S > qnorm(0.95, 0, 4 / 3 + 8 / pi * (sqrt(3) - 2))
   
+  index <- numeric(ncol(S))
+  
+  for(i in seq_along(index))
+  {
+    candidate <- max(colSums(S))
+    if(candidate == 0) break
+    candidate <- which(colSums(S) == candidate)
+    
+    index[i] <- if(length(candidate) == 1) candidate else sample(candidate, 1)
+    S[index[i], ] <- FALSE
+    S[, index[i]] <- FALSE
+  }
+  
+  S <- logical(length(index))
+  S[index] <- TRUE
+  
+  S <- as.logical(kronecker(matrix(S, nrow = bn[1]), matrix(1, nrow = ln[1], ncol = ln[2])))
+  attributes(S) <- attributes(X)
+  
+  expect_equal(S, Y)
 })
