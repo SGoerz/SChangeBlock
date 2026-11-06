@@ -9,9 +9,9 @@
 #'          or a strictly positive integer vector or matrix indicating the group (or block) of the corresponding observation in X. 
 #'          Default is \code{\link{sOpt}}\code{(n, 0.6)}.
 #' @param fun Character string; one of "gmd" (default), "var", "varWithoutCentering".
-#' @param u quantile at which blocks are marked significant.
+#' @param u quantile after which blocks are marked significant.
 #' 
-#' @returns A numeric vector or matrix. Has the same attributes as \code{x}.
+#' @returns A numeric vector or matrix. Has the same dimensions and attributes as \code{x}.
 #' 
 #' @examples
 #' # random field with a shift in the middle
@@ -22,6 +22,8 @@
 #' @export
 find_blocks <- function(x, s, fun = "gmd", u = 0.95)
 {
+  attrX <- attributes(x)
+  if(is(x, "vector") | is(x, "ts")) x <- matrix(x)
   n <- dim(x)
   
   if(missing(s)) s <- sOpt(n, 0.6)
@@ -54,7 +56,8 @@ find_blocks <- function(x, s, fun = "gmd", u = 0.95)
       S <- ((mu^2 - mean(mu)^2) * lprod / var(as.vector(x))) / sqrt(2)
     } else if(fun == "varWithoutCentering")
     {
-      S <- ((mu^2 * lprod / var(as.vector(x))) - 1) / sqrt(2)
+      sigma <- sum(x^2) / (prod(n) - 1) 
+      S <- ((mu^2 * lprod / sigma) - 1) / sqrt(2)
     }
     
     if(length(mu) == length(ln))
@@ -92,6 +95,6 @@ find_blocks <- function(x, s, fun = "gmd", u = 0.95)
     index <- as.logical(kronecker(I, matrix(1, nrow = ln[1], ncol = ln[2])))
   }
   
-  attributes(index) <- attributes(x)
+  attributes(index) <- attrX
   return(index)
 }

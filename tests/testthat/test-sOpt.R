@@ -16,6 +16,11 @@ test_that("build_blocks output has the correct format", {
   
   s <- build_blocks(20, 2)
   expect_equal(length(s), 20)
+  
+  s <- build_blocks(20, s = 0.569)
+  expect_equal(length(s), 20)
+  
+  expect_error(build_blocks(1))
 })
 
 test_that("build_blocks produces the correct output", {
@@ -24,4 +29,7 @@ test_that("build_blocks produces the correct output", {
   
   s <- build_blocks(20, 3)
   expect_equal(s, matrix(c(rep(1, 7), rep(2, 7), rep(3, 6))))
+  
+  s <- build_blocks(20, s = 0.569)
+  expect_equal(s, matrix(c(rep(1, 5), rep(2, 5), rep(3, 5), rep(4, 5))))
 })

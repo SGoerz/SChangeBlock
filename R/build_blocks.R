@@ -5,6 +5,8 @@
 #' 
 #' @param n sample size(s), integer (vector).
 #' @param bn desired number of blocks (per dimension). Integer (vector).
+#' @param s parameter for the number of the blocks, 0.5 < s < 1, block number \eqn{b_n = n^{(1-s)}}. 
+#'          Overrides \code{bn} if supplied.
 #' 
 #' @details
 #' This function is especially useful if you cannot have equally sized blocks 
@@ -23,8 +25,19 @@
 #' Mu(X, group = group)
 #' 
 #' @export
-build_blocks <- function(n, bn)
+build_blocks <- function(n, bn, s)
 {
+  if(missing(bn))
+  {
+    if(missing(s))
+    {
+      stop("Either bn or s has to be supplied!")
+    } else
+    {
+      bn <- round(n / floor(n^s))
+    }
+  }
+  
   if(length(n) == 1) n[2] <- 1
   if(length(bn) == 1) bn[2] <- 1
   
@@ -47,7 +60,7 @@ build_blocks <- function(n, bn)
   if(length(A) == 0) A <- NULL
   if(length(B) == 0) B <- NULL
   if(length(C) == 0) C <- NULL
-  if(length(D) == 0) D <- NULL
+  # if(length(D) == 0) D <- NULL
   
   rbind(cbind(A, B), cbind(C, D))
 }

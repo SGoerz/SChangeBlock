@@ -17,10 +17,10 @@ Default is \code{\link{sOpt}}\code{(n, 0.6)}.}
 
 \item{fun}{Character string; one of "gmd" (default), "var", "varWithoutCentering".}
 
-\item{u}{quantile at which blocks are marked significant.}
+\item{u}{quantile after which blocks are marked significant.}
 }
 \value{
-A numeric vector or matrix. Has the same attributes as \code{x}.
+A numeric vector or matrix. Has the same dimensions and attributes as \code{x}.
 }
 \description{
 Find the blocks that contribute (most) to a high test statistic

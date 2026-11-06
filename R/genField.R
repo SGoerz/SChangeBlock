@@ -143,7 +143,7 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
 #' Generates the indices for different types of change regions.
 #'
 #' @param n dimensions of the random field. Numeric vector.
-#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = [n^s]}.
+#' @param s parameter for the size of the blocks, 0.5 < s < 1, block length \eqn{l_n = n^s}.
 #' @param type change region type (integer or character). See "Details".
 #' @param middle,delta,distFun parameters for type 4L. See "Details".
 #' 
@@ -175,7 +175,7 @@ genField <- function(n, distr = rnorm, type = 0L, H = 100,
 changeRegion <- function(n, s, type = 1L, middle, delta = 0.15, distFun = dist)
 {
   if(missing(s)) s <- sOpt(n, 0.6)
-  ln <- round(n^s)
+  ln <- floor(n^s)
 
   if(is.na(n[2]))
   {

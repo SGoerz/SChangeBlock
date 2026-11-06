@@ -4,12 +4,15 @@
 \alias{build_blocks}
 \title{Build block index matrices}
 \usage{
-build_blocks(n, bn)
+build_blocks(n, bn, s)
 }
 \arguments{
 \item{n}{sample size(s), integer (vector).}
 
 \item{bn}{desired number of blocks (per dimension). Integer (vector).}
+
+\item{s}{parameter for the number of the blocks, 0.5 < s < 1, block number \eqn{b_n = n^{(1-s)}}.
+Overrides \code{bn} if supplied.}
 }
 \value{
 Strictly positive integer vector or matrix having the dimensions \code{n}.
