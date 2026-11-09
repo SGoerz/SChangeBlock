@@ -1,4 +1,6 @@
 test_that("Graphics returns the correct output", {
+  require(ggplot2)
+  
   X <- genField(c(40, 20))
   p <- plot(X, facet_id = factor(rep(1:2, each = 20^2)))
   
