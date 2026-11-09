@@ -10,6 +10,8 @@ test_that("find_blocks output has the correct format", {
   expect_equal(attributes(x), attributes(y))
   
   expect_error(find_blocks(X, s = 2))
+  expect_error(find_blocks(X, s = c("a", "b", "c")))
+  expect_error(find_blocks(X, s = build_blocks(c(20, 20), s = 0.6), fun = "gmd"))
 })
 
 test_that("find_blocks produces the correct output", {
