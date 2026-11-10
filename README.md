@@ -5,7 +5,7 @@
 [![R-CMD-check](https://github.com/SGoerz/SChangeBlock/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SGoerz/SChangeBlock/actions/workflows/R-CMD-check.yaml)
 [![CRAN status](https://www.r-pkg.org/badges/version/SChangeBlock)](https://CRAN.R-project.org/package=SChangeBlock)
 [![Codecov test coverage](https://codecov.io/gh/SGoerz/SChangeBlock/graph/badge.svg)](https://app.codecov.io/gh/SGoerz/SChangeBlock)
-<!-- [![downloads](https://cranlogs.r-pkg.org/badges/glmSTARMA)](https://cranlogs.r-pkg.org/) -->
+[![downloads](https://cranlogs.r-pkg.org/badges/SChangeBlock)](https://cranlogs.r-pkg.org/)
 <!-- badges: end -->
 
 ## Installation
