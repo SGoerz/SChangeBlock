@@ -5,6 +5,16 @@ test_that("sOpt returns the correct exponent", {
   b <- floor(n / l)
   
   expect_equal(l * b, n)
+  expect_equal(length(s.opt), length(n))
+  expect_type(s.opt, "double")
+  
+  n <- c(10:20)
+  s.opt <- sOpt(n, 0.6, penalty = 0.05)
+  
+  l <- round(n^s.opt)
+  b <- floor(n / l)
+  
+  expect_true(all(n %% b - round(n * 0.05) <= 0))
 })
 
 test_that("build_blocks output has the correct format", {

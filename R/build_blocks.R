@@ -60,18 +60,18 @@ build_blocks <- function(n, bn, s)
   if(length(A) == 0) A <- NULL
   if(length(B) == 0) B <- NULL
   if(length(C) == 0) C <- NULL
-  # if(length(D) == 0) D <- NULL
+  # if(length(D) == 0) D <- NULL # will per definition never occur
   
   rbind(cbind(A, B), cbind(C, D))
 }
 
 #' Optimal parameter s
 #' 
-#' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{n \; % \; \[n^{s}\] = 0}.
+#' Calculates the best parameter \eqn{\tilde{s}} for a given approximation s, such that \eqn{\text{rest} = n \; % \; \[n^{s}\] = 0}.
 #' 
 #' @param n sample size(s), integer (vector).
 #' @param s desired exponent, \eqn{0.5 \leq s \leq 1}.
-#' @param deviation factor of how much \eqn{n} can deviate from 0. Numeric value.
+#' @param penalty factor of how much a deviation of \eqn{\text{rest}} from 0 is penalized. Numeric value.
 #' @param step size of the step for the search, between 0 and 1.
 #' 
 #' @return \code{sOpt} returns a numeric vector of the optimal exponent(s).
@@ -80,15 +80,17 @@ build_blocks <- function(n, bn, s)
 #' sOpt(50, 0.6)
 #' sOpt(100, 0.6)
 #' 
+#' sOpt(11, 0.6, penalty = 0.1)
+#' 
 #' @export
-sOpt <- function(n, s = 0.6, deviation = 0, step = 0.001)
+sOpt <- function(n, s = 0.6, penalty = Inf, step = 0.001)
 {
-  if(deviation == 0) return(sOpt_c(n, s, step))
+  if(is.infinite(penalty)) return(sOpt_c(n, s, step))
   
   sapply(n, function(n)
   {
     res <- sSizes(n, step = 0.01)
-    # res$bn[which.min(abs(res$s[res$diff < 2] - s))]
-    res$s[which.min(abs(res$s - 0.6) + deviation * res$diff)]
+    res <- res[(res$diff - round(penalty * n)) <= 0, ]
+    res$s[which.min(abs(res$s - s))]
   })
 }

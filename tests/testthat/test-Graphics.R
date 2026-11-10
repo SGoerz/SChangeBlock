@@ -16,4 +16,17 @@ test_that("Graphics returns the correct output", {
   
   expect_true(is(p, "ggplot"))
   expect_type(p, "object")
+  
+  x <- genField(100)
+  p <- plot(x)
+  
+  expect_true(is(p, "ggplot"))
+  expect_type(p, "object")
+  
+  x <- t(x)
+  colnames(x) <- seq(1, by = 5, length.out = 100)
+  p <- plot(x)
+  
+  expect_true(is(p, "ggplot"))
+  expect_type(p, "object")
 })

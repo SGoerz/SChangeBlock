@@ -16,7 +16,7 @@
 #' @return a ggplot2 object. Function is mostly called for its side effect.
 #'
 #' @exportS3Method
-#' @importFrom ggplot2 ggplot aes geom_tile scale_fill_gradientn ggtitle geom_raster guides guide_colorbar facet_wrap
+#' @importFrom ggplot2 ggplot aes geom_tile scale_fill_gradientn ggtitle geom_raster guides guide_colorbar facet_wrap geom_line theme element_rect element_line element_text 
 plot.RandomField <- function(x, main = "", colors, name = "value", alpha = 1, facet_id = NULL,
                              p = NULL, ...)
 {
